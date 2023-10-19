@@ -1,51 +1,85 @@
-Proyecto pds4 - Estación de Casilleros
-Este proyecto tiene como objetivo implementar una Estación de Casilleros digital que permita a los usuarios reservar casilleros, cargar y retirar paquetes, así como verificar el estado de los casilleros. El sistema se compone de un backend desarrollado en Django y un frontend en React.js.
+# 📦 Proyecto pds4 - Estación de Casilleros
 
-Backend (Django)
-Requisitos:
-Python 3.x
-Pip
-Inicialización:
-Navega a la carpeta backend:
+Bienvenido al proyecto pds4. Estamos creando una innovadora Estación de Casilleros que permite a los usuarios reservar, cargar, retirar paquetes y más.
 
-cd backend
+---
 
-Activa el entorno virtual:
+## 🛠 Tecnologías utilizadas
 
-source venv/bin/activate  # En sistemas basados en UNIX
-venv\Scripts\activate  # En Windows
+- **Backend**: Django
+- **Frontend**: React.js
 
-Instala las dependencias:
+---
 
-pip install -r requirements.txt
+## 🚀 Inicialización
 
-Ejecutar el servidor:
+### Backend (Django)
 
-python manage.py runserver
+#### 📋 Requisitos:
 
-Creación de superusuario:
-Si no has creado un superusuario para el admin de Django, hazlo con el siguiente comando:
+- Python 3.9.7
+- pip 23.2.1
 
-python manage.py createsuperuser
-Sigue las instrucciones para configurar tu usuario y contraseña.
+#### 🚀 Instrucciones de inicialización:
 
-Frontend (React.js)
-Requisitos:
-Node.js
-npm o yarn
-Inicialización:
-Navega a la carpeta frontend:
+1. **Navega a la carpeta `backend`:**
+    ```bash
+    cd backend
+    ```
 
-cd frontend
+2. **Activa el entorno virtual:**
+    ```bash
+    source venv/bin/activate  # En sistemas basados en UNIX
+    venv\Scripts\activate  # En Windows
+    ```
 
-Instala las dependencias:
+3. **Instala las dependencias:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-npm install
-# o
-yarn install
+4. **Ejecutar el servidor:**
+    ```bash
+    python manage.py runserver
+    ```
 
-Ejecutar la aplicación:
+5. **Creación de superusuario:**
+    ```bash
+    python manage.py createsuperuser
+    ```
 
-npm start
-# o
-yarn start
+---
+
+### Frontend (React.js)
+
+#### 📋 Requisitos:
+
+- Node.js
+- npm o yarn
+
+#### 🚀 Instrucciones de inicialización:
+
+1. **Navega a la carpeta `frontend`:**
+    ```bash
+    cd frontend
+    ```
+
+2. **Instala las dependencias:**
+    ```bash
+    npm install
+    # o
+    yarn install
+    ```
+
+3. **Ejecutar la aplicación:**
+    ```bash
+    npm start
+    # o
+    yarn start
+    ```
+
+---
+
+¡Esperamos que disfrutes trabajando en este proyecto!
+
+---
