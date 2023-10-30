@@ -10,12 +10,13 @@ const HomePage = () => {
 
     const handleAccess = () => {
         const baseEndpoint = `https://backend-p3.vercel.app/locker/`;
-        const endpoint = userType === 'delivery' ? `${baseEndpoint}cerrar/1/` : `${baseEndpoint}abrir/1/`;
+        const endpoint = userType === 'delivery' ? `${baseEndpoint}cerrar/4/` : `${baseEndpoint}abrir/4/`;
     
-        axios.post(endpoint, {
+        axios.get(endpoint, {
             pin: pin,
             password: password
         }).then(response => {
+            
             setMessage(response.data.message);
         }).catch(error => {
             setMessage('Ocurrió un error al conectar con el servidor.');
