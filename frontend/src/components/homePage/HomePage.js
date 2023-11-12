@@ -1,11 +1,13 @@
 import './HomePage.css';
 import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
+import axios from 'axios';
 
 const HomePage = () => {
-  const [userType, setUserType] = useState('delivery');
+  const [userType, setUserType] = useState('client');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [lockerId, setLockerId] = useState('');
   const [lockState, setLockState] = useState('UNLOCKED');
 
   const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
@@ -40,26 +42,37 @@ const HomePage = () => {
   }
 
   const handleAccess = () => {
-    const newLockState = lockState === 'UNLOCKED' ? 'LOCKED' : 'UNLOCKED';
+    if (password === '') {
+      setMessage('Por favor, ingresa una contraseña.');
+      return;
+    }
 
-    const payload = {
-      state: {
-        desired: {
-          lockers: {
-            l1: {
-              lock: newLockState,
-            },
-          },
-        },
-      },
-    };
+    if (!lockerId) {
+      setMessage('Debes proporcionar un ID de casillero.');
+      return;
+    }
 
-    const params = {
-      payload: JSON.stringify(payload),
-      thingName: 'my_esp_lamp', // Cambia esto al nombre correcto de tu dispositivo en AWS IoT
-    };
+    const lockerNumber = parseInt(lockerId);
 
-    iotHandler.updateThingShadow(params, responseHandler);
+    if (lockerNumber < 1 || lockerNumber > 3) {
+      setMessage('El ID del casillero debe estar entre 1 y 3.');
+      return;
+    }
+
+    const locker = `l${lockerNumber}`;
+
+    const endpoint = userType === 'client' ? `/locker/abrir/${locker}/` : `/locker/cerrar/${locker}/`;
+
+    axios.get(endpoint, {
+      params: {
+        pin: lockerId,
+        password: password
+      }
+    }).then((response) => {
+      setMessage(response.data.message);
+    }).catch((error) => {
+      setMessage('Ocurrió un error al conectar con el servidor.');
+    });
   };
 
   return (
@@ -68,14 +81,20 @@ const HomePage = () => {
       <p>Reserva, carga y retira paquetes de manera sencilla y eficiente.</p>
 
       <div className="lockerAccess">
-        <h3>{userType === 'delivery' ? 'Acceso Repartidor' : 'Acceso Cliente'}</h3>
+        <h3>{userType === 'client' ? 'Acceso Cliente' : 'Acceso Repartidor'}</h3>
         <div className="inputGroup">
           <label>
             Tipo de Usuario:
             <select onChange={(e) => setUserType(e.target.value)}>
-              <option value="delivery">Repartidor</option>
               <option value="client">Cliente</option>
+              <option value="delivery">Repartidor</option>
             </select>
+          </label>
+        </div>
+        <div className="inputGroup">
+          <label>
+            ID del Casillero:
+            <input type="text" value={lockerId} onChange={(e) => setLockerId(e.target.value)} />
           </label>
         </div>
         <div className="inputGroup">
@@ -85,7 +104,7 @@ const HomePage = () => {
           </label>
         </div>
         <button onClick={handleAccess}>
-          {lockState === 'UNLOCKED' ? 'Cerrar' : 'Abrir'} Locker
+          {userType === 'client' ? 'Abrir' : 'Cerrar'} Locker
         </button>
         <p>{message}</p>
       </div>
