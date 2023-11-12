@@ -1,32 +1,31 @@
-// LoginPage.js
 import React, { useState } from 'react';
-import './LoginPage.css'; // Crea este archivo CSS para estilizar la página de inicio de sesión si es necesario
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import './LoginPage.css';
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Obtiene la función navigate
 
-  const handleLogin = async () => {
-    try {
-      // Realiza una solicitud al backend para autenticar al usuario
-      const response = await fetch('URL_DEL_BACKEND/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+  const handleLogin = () => {
+    // Lista de usuarios y contraseñas temporales (simulación)
+    const users = [
+      { username: 'repartidor', password: '12345678', userType: 'repartidor' },
+      { username: 'supervisor', password: '12345678', userType: 'supervisor' },
+    ];
 
-      if (response.ok) {
-        // Si la autenticación es exitosa, llama a la función onLogin
-        // para notificar al componente principal que el usuario ha iniciado sesión
-        onLogin();
-      } else {
-        // Maneja errores de autenticación aquí
-        console.error('Error de inicio de sesión');
-      }
-    } catch (error) {
-      console.error('Error de red', error);
+    // Verificar si el usuario y la contraseña coinciden en la lista
+    const user = users.find((user) => user.username === username && user.password === password);
+
+    if (user) {
+      // Si la autenticación es exitosa, llama a la función onLogin con el tipo de usuario
+      onLogin(user.userType);
+
+      // Redirige a la página de inicio ('/')
+      navigate('/');
+    } else {
+      // Maneja errores de autenticación aquí
+      console.error('Error de inicio de sesión');
     }
   };
 

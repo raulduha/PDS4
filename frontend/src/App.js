@@ -18,17 +18,21 @@ function App() {
     setIsLoggedIn(true);
   };
 
+  // Función para manejar el cierre de sesión
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
   return (
     <Router>
       <div className="App">
-        <Navbar isLoggedIn={isLoggedIn} />
+        <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/registration" element={<UserRegistration />} />
           <Route path="/reservation" element={<LockerReservation />} />
           <Route path="/retrieval" element={<PackageRetrieval />} />
-          <Route path="/status" element={<LockerStatus/>}/>
-          {/* Agregar la ruta al componente LoginPage */}
+          <Route path="/status" element={isLoggedIn ? <LockerStatus /> : <LoginPage onLogin={handleLogin} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         </Routes>
       </div>
@@ -37,6 +41,3 @@ function App() {
 }
 
 export default App;
-//<Route path="/status" element={isLoggedIn ? <LockerStatus /> : <LoginPage onLogin={handleLogin} />} />
-          
-
