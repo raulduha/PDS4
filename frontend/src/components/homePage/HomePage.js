@@ -2,8 +2,6 @@ import axios from 'axios';
 import './HomePage.css';
 import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const HomePage = () => {
   const [userType, setUserType] = useState('delivery');
@@ -12,23 +10,19 @@ const HomePage = () => {
   const [message, setMessage] = useState('');
   const [lockState, setLockState] = useState('UNLOCKED');
 
-  // Resto de tu código aquí
   const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
   const awsRegion = 'us-east-2';
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-  
-  
-  AWS.config.update({
-        region: awsRegion,
-        credentials: new AWS.Credentials({
-        accessKeyId: accessKeyId,
-        secretAccessKey: secretAccessKey,
-        }),
-    });
-    
+  const accessKeyId = 'AKIAU6BRFNUSIDVECJFA';
+  const secretAccessKey = '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';
 
-  
+  AWS.config.update({
+    region: awsRegion,
+    credentials: new AWS.Credentials({
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey
+    })
+  });
+
   const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
 
   const updateAppState = (newShadow) => {
