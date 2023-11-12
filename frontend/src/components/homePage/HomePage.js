@@ -1,11 +1,9 @@
-import axios from 'axios';
 import './HomePage.css';
 import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
 
 const HomePage = () => {
   const [userType, setUserType] = useState('delivery');
-  const [pin, setPin] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [lockState, setLockState] = useState('UNLOCKED');
@@ -40,25 +38,6 @@ const HomePage = () => {
       updateAppState(newShadow);
     }
   }
-
-  useEffect(() => {
-    const baseEndpoint = `https://backend-p3.vercel.app/locker/`;
-    const endpoint = userType === 'delivery' ? `${baseEndpoint}cerrar/4/` : `${baseEndpoint}abrir/4/`;
-
-    axios
-      .get(endpoint, {
-        params: {
-          pin: pin,
-          password: password,
-        },
-      })
-      .then((response) => {
-        setMessage(response.data.message);
-      })
-      .catch((error) => {
-        setMessage('Ocurrió un error al conectar con el servidor.');
-      });
-  }, [userType, pin, password]);
 
   const handleAccess = () => {
     const newLockState = lockState === 'UNLOCKED' ? 'LOCKED' : 'UNLOCKED';
@@ -97,12 +76,6 @@ const HomePage = () => {
               <option value="delivery">Repartidor</option>
               <option value="client">Cliente</option>
             </select>
-          </label>
-        </div>
-        <div className="inputGroup">
-          <label>
-            PIN:
-            <input type="password" value={pin} onChange={(e) => setPin(e.target.value)} />
           </label>
         </div>
         <div className="inputGroup">
