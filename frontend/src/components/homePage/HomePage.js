@@ -2,16 +2,52 @@ import axios from 'axios';
 import './HomePage.css';
 import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const HomePage = () => {
-  const [userType, setUserType] = useState('delivery'); // Por defecto, lo estableceré para el repartidor
+  const [userType, setUserType] = useState('delivery');
   const [pin, setPin] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [lockState, setLockState] = useState('UNLOCKED'); // Estado del casillero: LOCKED o UNLOCKED
+  const [lockState, setLockState] = useState('UNLOCKED');
+
+  // Resto de tu código aquí
+  const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
+  const awsRegion = 'us-east-2';
+  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+  
+  
+  AWS.config.update({
+        region: awsRegion,
+        credentials: new AWS.Credentials({
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+        }),
+    });
+    
+
+  
+  const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
+
+  const updateAppState = (newShadow) => {
+    setLockState(newShadow.state.desired.lockers.l1.lock);
+  };
+
+  function responseHandler(err, data) {
+    if (err) {
+      console.error('Error updating device shadow:', err);
+    } else {
+      const newShadow = JSON.parse(data.payload);
+
+      console.log('Device shadow updated:', newShadow);
+
+      updateAppState(newShadow);
+    }
+  }
 
   useEffect(() => {
-    // Esta función se ejecutará cuando cambie userType
     const baseEndpoint = `https://backend-p3.vercel.app/locker/`;
     const endpoint = userType === 'delivery' ? `${baseEndpoint}cerrar/4/` : `${baseEndpoint}abrir/4/`;
 
@@ -30,40 +66,7 @@ const HomePage = () => {
       });
   }, [userType, pin, password]);
 
-  // Definir iotHandler y responseHandler
-  const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
-  const awsRegion = 'us-east-2';
-  const accessKeyId = 'AKIAU6BRFNUSIDVECJFA';
-  const secretAccessKey = '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';
-
-  AWS.config.update({
-    region: awsRegion,
-    credentials: new AWS.Credentials({
-      accessKeyId: accessKeyId,
-      secretAccessKey: secretAccessKey
-    })
-  });
-
-  const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
-
-  function responseHandler(err, data) {
-    if (err) {
-      console.error('Error updating device shadow:', err);
-    } else {
-      const newShadow = JSON.parse(data.payload);
-
-      console.log('Device shadow updated:', newShadow);
-
-      updateAppState(newShadow);
-    }
-  }
-  const updateAppState = (newShadow) => {
-    // Aquí puedes realizar las acciones necesarias con newShadow
-    // Por ejemplo, actualizar el estado del componente
-    setLockState(newShadow.state.desired.lockers.l1.lock);
-  };
   const handleAccess = () => {
-    // Función para abrir o cerrar el casillero
     const newLockState = lockState === 'UNLOCKED' ? 'LOCKED' : 'UNLOCKED';
 
     const payload = {
