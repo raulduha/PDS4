@@ -71,28 +71,34 @@ const LockerStatus = () => {
         <div className="containerCentered">
             <div className="lockerStatus">
                 <h3>Estado de los Lockers</h3>
-                <ul className="lockerList">
-                    <li key="header" className="lockerItem tableHeader">
-                        <span>Locker ID</span>
-                        <span>Estado Candado</span>
-                        <span>Estado Puerta</span>
-                        <span>Contenido</span>
-                        <span>Estado</span>
-                        <span>Cliente Email</span>
-                        <span>Operador Email</span>
-                    </li>
-                    {lockers.map(locker => (
-                        <li key={locker.id} className="lockerItem">
-                            <span>{locker.id}</span>
-                            <span>{locker.lock}</span>
-                            <span>{locker.door}</span>
-                            <span>{locker.content}</span>
-                            <span>{locker.locker_status}</span>
-                            <span>{locker.client_email}</span>
-                            <span>{locker.operator_email}</span>
-                        </li>
-                    ))}
-                </ul>
+                <div className="tableWrapper">
+                    <table className="lockerTable">
+                        <thead>
+                            <tr className="tableHeader">
+                                <th>Locker ID</th>
+                                <th>Estado Candado</th>
+                                <th>Estado Puerta</th>
+                                <th>Contenido</th>
+                                <th>Estado</th>
+                                <th>Cliente Email</th>
+                                <th>Operador Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lockers.map(locker => (
+                                <tr key={locker.id} className="lockerItem">
+                                    <td>{locker.id}</td>
+                                    <td>{locker.lock}</td>
+                                    <td>{locker.door}</td>
+                                    <td>{locker.content}</td>
+                                    <td>{locker.locker_status}</td>
+                                    <td>{locker.client_email}</td>
+                                    <td>{locker.operator_email}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

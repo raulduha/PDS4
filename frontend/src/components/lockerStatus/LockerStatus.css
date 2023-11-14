@@ -8,9 +8,18 @@
     text-align: center;
 }
 
-.lockerList {
-    list-style-type: none;
-    padding: 0;
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.lockerTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableHeader {
+    font-weight: bold;
+    background-color: #f2f2f2;
 }
 
 .lockerItem {
@@ -18,9 +27,12 @@
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: table-row;
+}
+
+.lockerItem td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
 .lockerOpen {
@@ -29,12 +41,6 @@
 
 .lockerClosed {
     color: red;
-}
-
-/* Agregado para hacer la tabla más bonita */
-.tableHeader {
-    font-weight: bold;
-    background-color: #f2f2f2;
 }
 
 .containerCentered {
