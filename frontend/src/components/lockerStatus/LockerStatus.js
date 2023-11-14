@@ -100,7 +100,7 @@ const LockerStatus = () => {
                         <thead>
                             <tr className="tableHeader">
                                 <th>Locker_ID</th>
-                                <th>Estado</th>
+                                <th>Estados</th>
                                 <th>Cliente_Email</th>
                                 <th>Operador_Email</th>
                             </tr>
