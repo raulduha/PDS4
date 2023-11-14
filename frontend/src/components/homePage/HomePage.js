@@ -10,6 +10,7 @@ const HomePage = () => {
   const [lockerId, setLockerId] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // AWS configuration
   useEffect(() => {
     AWS.config.update({
       region: 'us-east-2',
@@ -20,6 +21,38 @@ const HomePage = () => {
     });
   }, []);
 
+  // Function to update device shadow based on lock value
+  const updateDeviceShadow = (awsLockerId, lockValue) => {
+    const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
+
+    const payload = {
+      state: {
+        desired: {
+          lockers: {
+            [awsLockerId]: {
+              lock: lockValue,
+            },
+          },
+        },
+      },
+    };
+
+    const params = {
+      payload: JSON.stringify(payload),
+      thingName: 'my_esp_lamp',
+    };
+
+    iotHandler.updateThingShadow(params, (err, data) => {
+      if (err) {
+        console.error('Error updating device shadow:', err);
+      } else {
+        const newShadow = JSON.parse(data.payload);
+        console.log('Device shadow updated:', newShadow);
+      }
+    });
+  };
+
+  // Function to handle user access
   const handleAccess = () => {
     if (password === '') {
       setMessage('Por favor, ingresa una contraseña.');
@@ -86,6 +119,8 @@ const HomePage = () => {
             })
               .then((response) => {
                 setMessage(response.data.message);
+                // Update device shadow after a successful request
+                updateDeviceShadow(awsLockerId, 'UNLOCKED');
               })
               .catch((error) => {
                 setMessage('Ocurrió un error al conectar con el servidor.');
@@ -99,7 +134,6 @@ const HomePage = () => {
             // Verificar si el locker está lleno antes de cerrarlo
             if (lockerState.state.reported.lockers[awsLockerId].content === 'FULL') {
               const djangoLockerId = `${lockerNumber}`;
-              console.log(lockerState.state.reported.lockers[awsLockerId].content);
               const endpoint = `https://backend-p3.vercel.app/api/locker/cerrar/${djangoLockerId}/`;
         
               axios.post(endpoint, {
@@ -110,12 +144,13 @@ const HomePage = () => {
               })
                 .then((response) => {
                   setMessage(response.data.message);
+                  // Update device shadow after a successful request
+                  updateDeviceShadow(awsLockerId, 'LOCKED');
                 })
                 .catch((error) => {
                   setMessage('Ocurrió un error al conectar con el servidor.');
                 });
             } else {
-              console.log(lockerState.state.reported.lockers[awsLockerId].content);
               setMessage('El locker no está lleno. No se puede cerrar.');
             }
           }
