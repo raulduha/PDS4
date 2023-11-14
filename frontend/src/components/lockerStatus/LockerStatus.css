@@ -1,10 +1,10 @@
 .lockerStatus {
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-top: 30px;
-    max-width: 500px;
-    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;  /* Agregado para que sea responsive en horizontal */
     text-align: center;
 }
 
@@ -30,6 +30,13 @@
 .lockerClosed {
     color: red;
 }
+
+/* Agregado para hacer la tabla más bonita */
+.tableHeader {
+    font-weight: bold;
+    background-color: #f2f2f2;
+}
+
 .containerCentered {
     display: flex;
     justify-content: center;
