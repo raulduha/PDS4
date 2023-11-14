@@ -102,59 +102,19 @@ const HomePage = () => {
           return;
         }
 
-        if (userType === 'client') {
-          // Lógica para el cliente (abrir el locker)
-          if (lockerState.state.reported.lockers[awsLockerId].lock === 'LOCKED') {
-            setMessage('El locker está cerrado. No se puede abrir.');
-          } else {
-            // El locker está abierto, realizar la solicitud al backend de Django
-            const djangoLockerId = `${lockerNumber}`;
-            const endpoint = `https://backend-p3.vercel.app/api/locker/abrir/${djangoLockerId}/`;
+        // Realizar la solicitud al backend de Django
+        const djangoLockerId = `${lockerNumber}`;
+        const endpoint = `http://127.0.0.1:8000/locker/${userType === 'client' ? 'abrir' : 'cerrar'}/${djangoLockerId}/${password}/`;
 
-            axios.post(endpoint, {
-              data: {
-                locker_id: djangoLockerId,
-                password: password,
-              },
-            })
-              .then((response) => {
-                setMessage(response.data.message);
-                // Update device shadow after a successful request
-                updateDeviceShadow(awsLockerId, 'UNLOCKED');
-              })
-              .catch((error) => {
-                setMessage('Ocurrió un error al conectar con el servidor.');
-              });
-          }
-        } else if (userType === 'delivery') {
-          // Lógica para el repartidor (cerrar el locker)
-          if (lockerState.state.reported.lockers[awsLockerId].lock === 'LOCKED') {
-            setMessage('El locker ya está cerrado. No se cerrar nuevamente.');
-          } else {
-            // Verificar si el locker está lleno antes de cerrarlo
-            if (lockerState.state.reported.lockers[awsLockerId].content === 'FULL') {
-              const djangoLockerId = `${lockerNumber}`;
-              const endpoint = `https://backend-p3.vercel.app/api/locker/cerrar/${djangoLockerId}/`;
-        
-              axios.post(endpoint, {
-                data: {
-                  locker_id: djangoLockerId,
-                  password: password,
-                },
-              })
-                .then((response) => {
-                  setMessage(response.data.message);
-                  // Update device shadow after a successful request
-                  updateDeviceShadow(awsLockerId, 'LOCKED');
-                })
-                .catch((error) => {
-                  setMessage('Ocurrió un error al conectar con el servidor.');
-                });
-            } else {
-              setMessage('El locker no está lleno. No se puede cerrar.');
-            }
-          }
-        }
+        axios.post(endpoint)
+          .then((response) => {
+            setMessage(response.data.message);
+            // Update device shadow after a successful request
+            updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
+          })
+          .catch((error) => {
+            setMessage('Ocurrió un error al conectar con el servidor.');
+          });
       }
     });
   };
