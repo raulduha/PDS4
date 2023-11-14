@@ -111,12 +111,43 @@ const HomePage = () => {
             setMessage(response.data.message);
             // Update device shadow after a successful request
             updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
+
+            // Wait for 6 seconds and check the lock status
+            setTimeout(() => {
+              checkLockStatus(awsLockerId);
+            }, 6000);
           })
           .catch((error) => {
             setMessage('Ocurrió un error al conectar con el servidor.');
           });
       }
     });
+  };
+
+  // Function to check the lock status every 3 seconds
+  const checkLockStatus = (awsLockerId) => {
+    const interval = setInterval(() => {
+      const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
+      const params = {
+        thingName: 'my_esp_lamp',
+      };
+
+      iotHandler.getThingShadow(params, (err, data) => {
+        if (err) {
+          console.error('Error al obtener el estado del locker desde AWS IoT:', err);
+        } else {
+          const lockerState = JSON.parse(data.payload);
+          const currentLockStatus = lockerState.state.reported.lockers[awsLockerId].lock;
+
+          if (currentLockStatus === 'LOCKED') {
+            setMessage('Cerrado exitosamente.');
+            clearInterval(interval);
+          } else {
+            setMessage('1. Asegúrate de que la puerta esté cerrada. 2. Asegúrate de que el contenido esté dentro del locker.');
+          }
+        }
+      });
+    }, 3000);
   };
 
   return (
