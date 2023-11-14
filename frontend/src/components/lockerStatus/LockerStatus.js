@@ -17,7 +17,7 @@ const LockerStatus = () => {
             secretAccessKey: secretAccessKey
         })
     });
-
+    let lockerState; // Define lockerState outside the callback
     const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
 
     useEffect(() => {
@@ -29,13 +29,13 @@ const LockerStatus = () => {
             if (err) {
                 console.error('Error al obtener el estado de los lockers desde AWS IoT:', err);
             } else {
-                const newShadow = JSON.parse(data.payload);
-
-                const lockersState = Object.keys(newShadow.state.reported.lockers).map(lockerId => ({
+                const lockerState = JSON.parse(data.payload);
+                console.log('Locker State:', lockerState);
+                const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => ({
                     id: lockerId,
-                    lock: newShadow.state.reported.lockers[lockerId].lock,
-                    door: newShadow.state.reported.lockers[lockerId].door,
-                    content: newShadow.state.reported.lockers[lockerId].content
+                    lock: lockerState.state.reported.lockers[lockerId].lock,
+                    door: lockerState.state.reported.lockers[lockerId].door,
+                    content: lockerState.state.reported.lockers[lockerId].content
                 }));
 
                 setLockers(lockersState);
