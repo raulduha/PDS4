@@ -3,9 +3,8 @@ import axios from 'axios';
 import AWS from 'aws-sdk';
 import './LockerStatus.css';
 
-const LockerStatus = () => {
-    const [lockers, setLockers] = useState([]);
-
+// Componente para manejar los datos de AWS IoT
+const AWSSection = ({ setLockers }) => {
     const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
     const awsRegion = 'us-east-2';
     const accessKeyId = 'AKIAU6BRFNUSIDVECJFA';
@@ -18,7 +17,7 @@ const LockerStatus = () => {
             secretAccessKey: secretAccessKey
         })
     });
-    let lockerState;
+
     const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
 
     useEffect(() => {
@@ -30,7 +29,7 @@ const LockerStatus = () => {
             if (err) {
                 console.error('Error al obtener el estado de los lockers desde AWS IoT:', err);
             } else {
-                lockerState = JSON.parse(data.payload);
+                const lockerState = JSON.parse(data.payload);
                 const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => {
                     const localId = parseInt(lockerId.replace('l', '')); // Convierte el ID de AWS a ID local
                     return {
@@ -44,14 +43,26 @@ const LockerStatus = () => {
                 setLockers(lockersState);
             }
         });
-    }, []);
-// ... (código anterior)
-useEffect(() => {
-    if (lockerState) {
-        axios.get('http://127.0.0.1:8000/lockers/')
+    }, [setLockers]);
+
+    return null; // No se renderiza nada en el DOM
+};
+
+// Componente principal que muestra los datos combinados de AWS y Vercel
+const LockerStatus = () => {
+    const [lockers, setLockers] = useState([]);
+
+    useEffect(() => {
+        axios.get('https://backend-p3.vercel.app/lockers/')
             .then(response => {
+                console.log('Respuesta del servidor:', response.data);
+
                 const updatedLockers = lockers.map(locker => {
-                    const matchingLocker = response.data.find(item => item.locker_id === `l${locker.id}`);
+                    const matchingLocker = response.data.find(item => {
+                        // Comparar sin tener en cuenta el prefijo "l" en AWS
+                        const awsLockerId = `l${locker.id}`;
+                        return item.locker_id === awsLockerId;
+                    });
                     return {
                         ...locker,
                         client_email: matchingLocker ? matchingLocker.client_email : 'N/A',
@@ -64,26 +75,24 @@ useEffect(() => {
             .catch(error => {
                 console.error('Error al obtener datos desde el servidor:', error);
             });
-    }
-}, [lockerState, lockers]);
-
-
+    }, [lockers]);
 
     return (
         <div className="containerCentered">
             <div className="lockerStatus">
                 <h3>Estado de los Lockers</h3>
+                <AWSSection setLockers={setLockers} />
                 <div className="tableWrapper">
                     <table className="lockerTable">
                         <thead>
                             <tr className="tableHeader">
-                                <th>Locker ID</th>
-                                <th>Estado Candado</th>
-                                <th>Estado Puerta</th>
+                                <th>Locker_ID</th>
+                                <th>Estado_Candado</th>
+                                <th>Estado_Puerta</th>
                                 <th>Contenido</th>
                                 <th>Estado</th>
-                                <th>Cliente Email</th>
-                                <th>Operador Email</th>
+                                <th>Cliente_Email</th>
+                                <th>Operador_Email</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,6 +113,7 @@ useEffect(() => {
             </div>
         </div>
     );
-}
+    
+                            };
 
 export default LockerStatus;

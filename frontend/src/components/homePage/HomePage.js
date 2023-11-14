@@ -129,6 +129,9 @@ const handleAccess = () => {
 };
 
   // Function to check the lock status every 6 seconds
+// ... (resto del código)
+
+// Function to check the lock status every 6 seconds
 const checkLockStatus = (awsLockerId, retryCount = 0) => {
   const maxRetries = 10; // Número máximo de intentos
 
@@ -160,10 +163,15 @@ const checkLockStatus = (awsLockerId, retryCount = 0) => {
             clearInterval(interval);
           }
         }
+        
+        // Actualizar el dispositivo sombra después de cada verificación
+        updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
       }
     });
   }, 6000);
 };
+
+
 
 
   return (
