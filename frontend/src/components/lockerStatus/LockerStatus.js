@@ -45,27 +45,29 @@ const LockerStatus = () => {
             }
         });
     }, []);
-
-    useEffect(() => {
-        if (lockerState) {
-            axios.get('http://127.0.0.1:8000/')
-                .then(response => {
-                    const updatedLockers = lockers.map(locker => {
-                        const matchingLocker = response.data.find(item => item.locker_id === locker.id);
-                        return {
-                            ...locker,
-                            client_email: matchingLocker ? matchingLocker.client_email : 'N/A',
-                            operator_email: matchingLocker ? matchingLocker.operator_email : 'N/A',
-                            locker_status: matchingLocker ? 'Disponible' : 'N/A'
-                        };
-                    });
-                    setLockers(updatedLockers);
-                })
-                .catch(error => {
-                    console.error('Error al obtener datos desde el servidor:', error);
+// ... (código anterior)
+useEffect(() => {
+    if (lockerState) {
+        axios.get('http://127.0.0.1:8000/lockers/')
+            .then(response => {
+                const updatedLockers = lockers.map(locker => {
+                    const matchingLocker = response.data.find(item => item.locker_id === `l${locker.id}`);
+                    return {
+                        ...locker,
+                        client_email: matchingLocker ? matchingLocker.client_email : 'N/A',
+                        operator_email: matchingLocker ? matchingLocker.operator_email : 'N/A',
+                        locker_status: matchingLocker ? 'Disponible' : 'N/A'
+                    };
                 });
-        }
-    }, [lockerState]);
+                setLockers(updatedLockers);
+            })
+            .catch(error => {
+                console.error('Error al obtener datos desde el servidor:', error);
+            });
+    }
+}, [lockerState, lockers]);
+
+
 
     return (
         <div className="containerCentered">
