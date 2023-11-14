@@ -4,7 +4,7 @@ import AWS from 'aws-sdk';
 import './LockerStatus.css';
 
 // Componente para manejar los datos de AWS IoT
-const AWSSection = ({ setLockers }) => {
+const AWSSection = ({ setAWSLockers }) => {
     const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
     const awsRegion = 'us-east-2';
     const accessKeyId = 'AKIAU6BRFNUSIDVECJFA';
@@ -40,48 +40,35 @@ const AWSSection = ({ setLockers }) => {
                     };
                 });
 
-                setLockers(lockersState);
+                setAWSLockers(lockersState);
             }
         });
-    }, [setLockers]);
+    }, [setAWSLockers]);
 
     return null; // No se renderiza nada en el DOM
 };
 
-// Componente principal que muestra los datos combinados de AWS y Vercel
+// Componente principal que muestra los datos de Vercel
 const LockerStatus = () => {
-    const [lockers, setLockers] = useState([]);
+    const [AWSLockers, setAWSLockers] = useState([]);
+    const [VercelLockers, setVercelLockers] = useState([]);
 
     useEffect(() => {
         axios.get('https://backend-p3.vercel.app/lockers/')
             .then(response => {
-                console.log('Respuesta del servidor:', response.data);
-
-                const updatedLockers = lockers.map(locker => {
-                    const matchingLocker = response.data.find(item => {
-                        // Comparar sin tener en cuenta el prefijo "l" en AWS
-                        const awsLockerId = `l${locker.id}`;
-                        return item.locker_id === awsLockerId;
-                    });
-                    return {
-                        ...locker,
-                        client_email: matchingLocker ? matchingLocker.client_email : 'N/A',
-                        operator_email: matchingLocker ? matchingLocker.operator_email : 'N/A',
-                        locker_status: matchingLocker ? 'Disponible' : 'N/A'
-                    };
-                });
-                setLockers(updatedLockers);
+                console.log('Respuesta del servidor (Vercel):', response.data);
+                setVercelLockers(response.data);
             })
             .catch(error => {
                 console.error('Error al obtener datos desde el servidor:', error);
             });
-    }, [lockers]);
+    }, []);
 
     return (
         <div className="containerCentered">
             <div className="lockerStatus">
-                <h3>Estado de los Lockers</h3>
-                <AWSSection setLockers={setLockers} />
+                <h3>Estado de los Lockers (AWS)</h3>
+                <AWSSection setAWSLockers={setAWSLockers} />
                 <div className="tableWrapper">
                     <table className="lockerTable">
                         <thead>
@@ -90,18 +77,38 @@ const LockerStatus = () => {
                                 <th>Estado_Candado</th>
                                 <th>Estado_Puerta</th>
                                 <th>Contenido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {AWSLockers.map(locker => (
+                                <tr key={locker.id} className="lockerItem">
+                                    <td>{locker.id}</td>
+                                    <td>{locker.lock}</td>
+                                    <td>{locker.door}</td>
+                                    <td>{locker.content}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div className="lockerStatus">
+                <h3>Estado de los Lockers (Vercel)</h3>
+                <div className="tableWrapper">
+                    <table className="lockerTable">
+                        <thead>
+                            <tr className="tableHeader">
+                                <th>Locker_ID</th>
                                 <th>Estado</th>
                                 <th>Cliente_Email</th>
                                 <th>Operador_Email</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {lockers.map(locker => (
-                                <tr key={locker.id} className="lockerItem">
-                                    <td>{locker.id}</td>
-                                    <td>{locker.lock}</td>
-                                    <td>{locker.door}</td>
-                                    <td>{locker.content}</td>
+                            {VercelLockers.map(locker => (
+                                <tr key={locker.locker_id} className="lockerItem">
+                                    <td>{locker.locker_id}</td>
                                     <td>{locker.locker_status}</td>
                                     <td>{locker.client_email}</td>
                                     <td>{locker.operator_email}</td>
@@ -113,7 +120,6 @@ const LockerStatus = () => {
             </div>
         </div>
     );
-    
-                            };
+};
 
 export default LockerStatus;
