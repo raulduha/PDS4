@@ -1,3 +1,40 @@
-.user-registration {
+/* Estilos para PackageRetrieval */
+
+.package-retrieval-container {
+    max-width: 400px;
+    margin: 20px auto;
     padding: 20px;
-}
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+  }
+  
+  button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
+  .retrieval-result {
+    margin-top: 15px;
+    color: #4caf50;
+  }
+  
