@@ -1,0 +1,31 @@
+/* OperatorCreate.css */
+
+h3 {
+    color: #333;
+  }
+  
+  form {
+    max-width: 400px;
+    margin-top: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  /* Otros estilos según sea necesario */
+  

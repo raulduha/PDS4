@@ -12,6 +12,7 @@ const LoginPage = ({ onLogin }) => {
     const users = [
       { username: 'repartidor', password: '12345678', userType: 'repartidor' },
       { username: 'supervisor', password: '12345678', userType: 'supervisor' },
+      { username: 'cliente'   , password: '12345678', userType: 'cliente'},
     ];
 
     // Verificar si el usuario y la contraseña coinciden en la lista

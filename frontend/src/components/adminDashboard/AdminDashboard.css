@@ -1,0 +1,35 @@
+/* Estilos para AdminDashboard */
+
+/* Estilos generales */
+h2 {
+    color: #333;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  li {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos específicos para casilleros */
+  strong {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  /* Otros estilos */
+  p {
+    margin: 0;
+  }
+  
+  .loading {
+    color: #777;
+    font-style: italic;
+  }
+  
+  

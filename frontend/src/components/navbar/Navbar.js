@@ -21,6 +21,12 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
               <Link to="/status">Estado Lockers</Link>
             </li>
             <li>
+              <Link to="/adashboard">Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/reservation">reservation</Link>
+            </li>
+            <li>
               {/* Agrega un enlace para cerrar sesión */}
               <button onClick={handleLogout}>Cerrar Sesión</button>
             </li>
