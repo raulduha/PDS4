@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AdminDashboard.css';
+import OperatorList from './OperatorList';
+import OperatorCreate from './OperatorCreate';
+import OperatorUpdate from './OperatorUpdate';
 
 const AdminDashboard = () => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useState('list');
+  const [selectedOperator, setSelectedOperator] = useState(null);
 
   useEffect(() => {
-    // Aquí realizarías una petición a tu API para obtener datos relevantes del dashboard
+    // Tu lógica para obtener datos relevantes del dashboard
     axios.get('/api/admin/dashboard')
       .then(response => {
         setStations(response.data.stations);
@@ -19,6 +24,20 @@ const AdminDashboard = () => {
       });
   }, []);
 
+  const handleOperatorClick = (operator) => {
+    setSelectedOperator(operator);
+    setView('update');
+  };
+
+  const handleCreateClick = () => {
+    setView('create');
+  };
+
+  const handleBackToList = () => {
+    setSelectedOperator(null);
+    setView('list');
+  };
+
   if (loading) {
     return <p>Cargando...</p>;
   }
@@ -26,16 +45,26 @@ const AdminDashboard = () => {
   return (
     <div>
       <h2>Admin Dashboard</h2>
-      {/* Aquí mostrarías estadísticas, gráficos y otros detalles del sistema */}
-      <ul>
-        {stations.map(station => (
-          <li key={station.id}>
-            <strong>{station.name}</strong>
-            <p>Total de casilleros: {station.totalLockers}</p>
-            <p>Casilleros disponibles: {station.availableLockers}</p>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <button onClick={handleCreateClick}>Crear Operador</button>
+      </div>
+      {view === 'list' && (
+        <OperatorList
+          stations={stations}
+          onOperatorClick={handleOperatorClick}
+        />
+      )}
+      {view === 'create' && (
+        <OperatorCreate
+          onBackToList={handleBackToList}
+        />
+      )}
+      {view === 'update' && (
+        <OperatorUpdate
+          operator={selectedOperator}
+          onBackToList={handleBackToList}
+        />
+      )}
     </div>
   );
 };

@@ -1,0 +1,22 @@
+/* Estilos para la lista de operadores */
+h3 {
+    color: #333;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 20px;
+  }
+  
+  p {
+    margin: 0;
+  }
+  
+  /* Estilos adicionales según sea necesario */
+  
