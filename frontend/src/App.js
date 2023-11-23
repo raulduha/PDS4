@@ -7,7 +7,9 @@ import UserRegistration from './components/userRegistration/UserRegistration';
 import LockerReservation from './components/lockerReservation/LockerReservation';
 import HomePage from './components/homePage/HomePage';
 import LoginPage from './components/login/LoginPage';
+import OperatorCreate from './components/adminDashboard/OperatorCreate';
 
+import OperatorUpdate from './components/adminDashboard/OperatorUpdate';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './components/adminDashboard/AdminDashboard';
 
@@ -35,6 +37,9 @@ function App() {
           <Route path="/adashboard" element={<AdminDashboard />} />
           <Route path="/retrieval" element={<PackageRetrieval />} />
           <Route path="/status" element={isLoggedIn ? <LockerStatus /> : <LoginPage onLogin={handleLogin} />} />
+          <Route path="/editOP/:operator_id" element={isLoggedIn ? <OperatorUpdate /> : <LoginPage onLogin={handleLogin} />} />
+          <Route path="/createOP" element={isLoggedIn ? <OperatorCreate /> : <LoginPage onLogin={handleLogin} />} />
+          
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         </Routes>
       </div>

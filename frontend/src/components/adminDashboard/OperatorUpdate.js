@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './OperatorUpdate.css';
-
-const OperatorUpdate = ({ match }) => {
+// Importa el hook useParams
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+const OperatorUpdate = () => {
+  // Utiliza el hook useParams para obtener los parámetros de la URL
+  const { operator_id } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     last_name: '',
@@ -11,17 +16,21 @@ const OperatorUpdate = ({ match }) => {
     is_supervisor: false,
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // Obtener los detalles del operador al cargar el componente
-    axios.get(`http://127.0.0.1:8000/operators/${match.params.operator_id}/`)
+    console.log(operator_id); // Agrega esto para verificar el ID del operador
+    axios.get(`http://127.0.0.1:8000/operators/${operator_id}/`)
       .then(response => {
         setFormData(response.data);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching operator details:', error);
+        setLoading(false);
       });
-  }, [match.params.operator_id]);
-
+  }, [operator_id]);
+  
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -29,15 +38,21 @@ const OperatorUpdate = ({ match }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Enviar la solicitud PUT para actualizar el operador
-    axios.put(`/operators/${match.params.operator_id}/update/`, formData)
+    axios.put(`http://127.0.0.1:8000/operators/${operator_id}/update/`, formData)
       .then(response => {
         console.log('Operador actualizado:', response.data);
         // Realizar acciones adicionales después de la actualización si es necesario
+        navigate('/adashboard');
+
       })
       .catch(error => {
         console.error('Error al actualizar el operador:', error);
       });
   };
+
+  if (loading) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div>

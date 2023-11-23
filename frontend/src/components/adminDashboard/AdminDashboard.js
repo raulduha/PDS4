@@ -4,13 +4,14 @@ import './AdminDashboard.css';
 import OperatorList from './OperatorList';
 import OperatorCreate from './OperatorCreate';
 import OperatorUpdate from './OperatorUpdate';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('list');
   const [selectedOperator, setSelectedOperator] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Tu lógica para obtener datos relevantes del dashboard
     axios.get('/api/admin/dashboard')
@@ -26,11 +27,13 @@ const AdminDashboard = () => {
 
   const handleOperatorClick = (operator) => {
     setSelectedOperator(operator);
-    setView('update');
+    // Utiliza el método `navigate` para redirigir a la ruta de edición con el ID del operador
+    navigate(`/editOP/${operator.id}`);
   };
 
   const handleCreateClick = () => {
-    setView('create');
+    // Utiliza el método `navigate` para redirigir a la ruta de creación
+    navigate('/createOP');
   };
 
   const handleBackToList = () => {
@@ -42,31 +45,32 @@ const AdminDashboard = () => {
     return <p>Cargando...</p>;
   }
 
-  return (
-    <div>
-      <h2>Admin Dashboard</h2>
-      <div>
-        <button onClick={handleCreateClick}>Crear Operador</button>
-      </div>
-      {view === 'list' && (
-        <OperatorList
-          stations={stations}
-          onOperatorClick={handleOperatorClick}
-        />
-      )}
-      {view === 'create' && (
-        <OperatorCreate
-          onBackToList={handleBackToList}
-        />
-      )}
-      {view === 'update' && (
-        <OperatorUpdate
-          operator={selectedOperator}
-          onBackToList={handleBackToList}
-        />
-      )}
+  
+return (
+  <div className="admin-dashboard">
+    <h2>Admin Dashboard</h2>
+    <div className="dashboard-actions">
+      <button onClick={handleCreateClick}>Crear Operador</button>
     </div>
-  );
+    {view === 'list' && (
+      <OperatorList
+        stations={stations}
+        onOperatorClick={handleOperatorClick}
+      />
+    )}
+    {view === 'create' && (
+      <OperatorCreate
+        onBackToList={handleBackToList}
+      />
+    )}
+    {view === 'update' && (
+      <OperatorUpdate
+        operator={selectedOperator}
+        onBackToList={handleBackToList}
+      />
+    )}
+  </div>
+);
 };
 
 export default AdminDashboard;

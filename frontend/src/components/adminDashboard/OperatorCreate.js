@@ -24,7 +24,7 @@ const OperatorCreate = () => {
       .then(response => {
         console.log('Operador creado:', response.data);
         // Realizar acciones adicionales después de la creación si es necesario
-        navigate('/'); // Redirigir al Admin Dashboard
+        navigate('/adashboard'); // Redirigir al Admin Dashboard
       })
       .catch(error => {
         console.error('Error al crear el operador:', error);
