@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
-
+import { useNavigate } from 'react-router-dom';
 const Navbar = ({ isLoggedIn, onLogout }) => {
+  const navigate =useNavigate();
   const handleLogout = () => {
     // Llama a la función onLogout para cerrar sesión
     onLogout();
+    navigate('/');
   };
 
   return (
