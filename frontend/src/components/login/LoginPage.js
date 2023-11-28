@@ -1,34 +1,36 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Importa axios
 import './LoginPage.css';
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate(); // Obtiene la función navigate
-
-  const handleLogin = () => {
-    // Lista de usuarios y contraseñas temporales (simulación)
-    const users = [
-      { username: 'repartidor', password: '12345678', userType: 'repartidor' },
-      { username: 'supervisor', password: '12345678', userType: 'supervisor' },
-      { username: 'cliente'   , password: '12345678', userType: 'cliente'},
-    ];
-
-    // Verificar si el usuario y la contraseña coinciden en la lista
-    const user = users.find((user) => user.username === username && user.password === password);
-
-    if (user) {
-      // Si la autenticación es exitosa, llama a la función onLogin con el tipo de usuario
-      onLogin(user.userType);
-
-      // Redirige a la página de inicio ('/')
-      navigate('/');
-    } else {
-      // Maneja errores de autenticación aquí
-      console.error('Error de inicio de sesión');
+  const navigate = useNavigate();
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/login-operator/', {
+        email: username,
+        password: password,
+      });
+  
+      if (response.data) {
+        // Almacena la información de autenticación en localStorage
+        localStorage.setItem('userType', response.data);
+  
+        // Llama a la función onLogin con el tipo de usuario
+        onLogin(response.data);
+  
+        // Redirige a la página de inicio ('/')
+        navigate('/');
+      } else {
+        console.error('Error de inicio de sesión');
+      }
+    } catch (error) {
+      console.error('Error de red:', error.message);
     }
   };
+  
 
   return (
     <div className="login-page">
