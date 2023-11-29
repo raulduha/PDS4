@@ -31,7 +31,7 @@ const AWSSection = ({ setAWSLockers }) => {
             } else {
                 const lockerState = JSON.parse(data.payload);
                 const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => {
-                    const localId = parseInt(lockerId.replace('l', '')); // Convierte el ID de AWS a ID local
+                    const localId = parseInt(lockerId.replace('', '')); // Convierte el ID de AWS a ID local
                     return {
                         id: localId,
                         lock: lockerState.state.reported.lockers[lockerId].lock,
@@ -73,9 +73,9 @@ const LockerStatus = () => {
                     <table className="lockerTable">
                         <thead>
                             <tr className="tableHeader">
-                                <th>Locker_ID</th>
-                                <th>Estado_Candado</th>
-                                <th>Estado_Puerta</th>
+                                <th>Locker ID</th>
+                                <th>Estado Candado</th>
+                                <th>Estado Puerta</th>
                                 <th>Contenido</th>
                             </tr>
                         </thead>
@@ -99,10 +99,10 @@ const LockerStatus = () => {
                     <table className="lockerTable">
                         <thead>
                             <tr className="tableHeader">
-                                <th>Locker_ID</th>
+                                <th>Locker ID</th>
                                 <th>Estados</th>
-                                <th>Cliente_Email</th>
-                                <th>Operador_Email</th>
+                                <th>Cliente Email</th>
+                                <th>Operador Email</th>
                             </tr>
                         </thead>
                         <tbody>

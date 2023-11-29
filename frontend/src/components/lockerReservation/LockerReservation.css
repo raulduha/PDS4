@@ -1,28 +1,46 @@
-/* Estilos para LockerReservation */
+/* LockerReservation.css */
+
+.reservation-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
 h2 {
-    color: #333;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-  }
-  
-  button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
+  color: #333;
+}
+
+.reservation-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.reservation-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 15px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.reservation-item:hover {
+  transform: scale(1.02);
+}
+
+.reservation-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.reservation-info {
+  width: 48%; /* Ajusta según tus necesidades */
+  margin-bottom: 10px;
+}
+
+.dashboard {
+  margin-top: 50px;
+}
+
+/* Estilo adicional según sea necesario */
