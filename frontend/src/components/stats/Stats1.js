@@ -4,9 +4,24 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LabelList 
 
 const StationCharts = ({ stationId }) => {
   const [stationInfo, setStationInfo] = useState(null);
-  const [lockerInfo1, setLockerInfo1] = useState(null);
-  const [lockerInfo2, setLockerInfo2] = useState(null);
-  const [lockerInfo3, setLockerInfo3] = useState(null);
+  const [lockerInfo1, setLockerInfo1] = useState({
+    locker_id: 1,
+    usage_percentage: 0.0,
+    avg_time_reservation_to_loading: 0,
+    avg_time_loading_to_pickup: 0,
+  });
+  const [lockerInfo2, setLockerInfo2] = useState({
+    locker_id: 2,
+    usage_percentage: 0.0,
+    avg_time_reservation_to_loading: 0,
+    avg_time_loading_to_pickup: 0,
+  });
+  const [lockerInfo3, setLockerInfo3] = useState({
+    locker_id: 3,
+    usage_percentage: 0.0,
+    avg_time_reservation_to_loading: 0,
+    avg_time_loading_to_pickup: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -177,6 +192,114 @@ const StationCharts = ({ stationId }) => {
         </BarChart>
       </div>
 
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 1 Daily avg_time_reservation_to_loading', value: lockerInfo1.avg_time_reservation_to_loading }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#8884d8">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 2 Daily avg_time_reservation_to_loading', value: lockerInfo2.avg_time_reservation_to_loading }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#82ca9d">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 3 Daily avg_time_reservation_to_loading', value: lockerInfo3.avg_time_reservation_to_loading }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#ffc658">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 1 Daily avg_time_loading_to_pickup', value: lockerInfo1.avg_time_loading_to_pickup }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#8884d8">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 2 Daily avg_time_loading_to_pickup', value: lockerInfo2.avg_time_loading_to_pickup }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#82ca9d">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 3 Daily avg_time_loading_to_pickup', value: lockerInfo3.avg_time_loading_to_pickup }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#ffc658">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
       <h2>Historical Station Charts</h2>
 
       <div>
@@ -221,19 +344,18 @@ const StationCharts = ({ stationId }) => {
           height={200}
           data={historicalDataLoadingToPickup}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
+          >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
           <Legend />
           <Bar dataKey="value" fill="#ffc658">
-            <LabelList dataKey="value" position="top" />
+          <LabelList dataKey="value" position="top" />
           </Bar>
-        </BarChart>
-      </div>
-    </div>
-  );
-};
-
-export default StationCharts;
+          </BarChart>
+          </div>
+          </div>
+          );
+          };
+          export default StationCharts;
