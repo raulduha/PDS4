@@ -7,20 +7,18 @@ const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/login-operator/', {
-        email: username,
-        password: password,
-      });
-  
+      const response = await axios.get(`https://backend-p3.vercel.app/operators/login/${username}/${password}`);
+
       if (response.data) {
         // Almacena la información de autenticación en localStorage
         localStorage.setItem('userType', response.data);
-  
+
         // Llama a la función onLogin con el tipo de usuario
         onLogin(response.data);
-  
+
         // Redirige a la página de inicio ('/')
         navigate('/');
       } else {
@@ -30,7 +28,6 @@ const LoginPage = ({ onLogin }) => {
       console.error('Error de red:', error.message);
     }
   };
-  
 
   return (
     <div className="login-page">
