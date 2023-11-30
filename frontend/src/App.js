@@ -24,6 +24,7 @@ import StationUpdate from './components/station/StationUpdate';
 import LockerView from './components/station/LockerView';
 import LockerUpdate from './components/station/LockerUpdate';
 import Bitacora from './components/lockerReservation/Bitacora';
+import StationInfo from './components/stats/Stats1';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -96,6 +97,10 @@ function App() {
           <Route
             path="/lockers"
             element={isLoggedIn ? <LockerList /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/stats"
+            element={isLoggedIn ? <StationInfo /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
           <Route
             path="/lockers/:locker_id"
