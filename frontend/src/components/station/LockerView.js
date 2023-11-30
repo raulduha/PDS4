@@ -1,42 +1,61 @@
+// LockerView.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
-const LockerView = ({ lockerId }) => {
-  const [locker, setLocker] = useState({});
-  const navigate = useNavigate();
+const LockerView = () => {
+  const [lockerDetails, setLockerDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  const { locker_id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/lockers/${lockerId}/`)
+    axios.get(`http://127.0.0.1:8000/lockers/${locker_id}/`)
       .then(response => {
-        setLocker(response.data);
+        console.log(response.data); // Agregamos un log para verificar la respuesta del servidor
+        setLockerDetails(response.data);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching locker details:', error);
+        setLoading(false);
       });
-  }, [lockerId]);
+  }, [locker_id]);
 
-  const handleDelete = () => {
-    axios.delete(`http://127.0.0.1:8000/lockers/${lockerId}/delete/`)
-      .then(response => {
-        console.log('Locker deleted:', response.data);
-        navigate('/lockers');
-      })
-      .catch(error => {
-        console.error('Error deleting locker:', error);
-      });
-  };
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
       <h2>Locker Details</h2>
-      <p><strong>Size:</strong> {locker.size_width} x {locker.size_height} x {locker.size_length}</p>
-      <p><strong>Is First Closure:</strong> {locker.is_first_closure ? 'Yes' : 'No'}</p>
-      <p><strong>Status:</strong> {locker.status}</p>
-      <p><strong>State:</strong> {locker.state}</p>
-      <p><strong>Is Empty:</strong> {locker.is_empty ? 'Yes' : 'No'}</p>
-      <button onClick={handleDelete}>Delete Locker</button>
-      <Link to={`/lockers/${lockerId}/update`}>Edit Locker</Link>
+      <table>
+        <tbody>
+          <tr>
+            <td>ID:</td>
+            <td>{lockerDetails.id}</td>
+          </tr>
+          <tr>
+            <td>Width:</td>
+            <td>{lockerDetails.size_width}</td>
+          </tr>
+          <tr>
+            <td>Height:</td>
+            <td>{lockerDetails.size_height}</td>
+          </tr>
+          <tr>
+            <td>Length:</td>
+            <td>{lockerDetails.size_length}</td>
+          </tr>
+          {/* Agrega más filas según las características del locker */}
+        </tbody>
+      </table>
+      <Link to={`/lockers/${locker_id}/update`}>
+        <button>Edit Locker</button>
+      </Link>
+      <Link to={`/stations`}>
+        <button className="cancel-button">Back to Stations</button>
+      </Link>
+  
     </div>
   );
 };

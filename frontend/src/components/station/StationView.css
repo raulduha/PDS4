@@ -1,0 +1,46 @@
+/* StationView.css */
+
+.station-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .locker-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .locker-table th, .locker-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .locker-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .locker-actions {
+    margin-top: 10px;
+  }
+  
+
+  /* Estilos para el botón Create Locker */
+  .station-container button {
+    background-color: #4caf50; /* Color de fondo verde */
+    color: white; /* Texto en blanco */
+    padding: 10px 15px; /* Ajuste del espacio interno */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  }
+  
+  .station-container button:hover {
+    background-color: #45a049; /* Cambia el color al pasar sobre el botón */
+  }
+  
+  .locker-actions button {
+    margin-right: 10px;
+  }
+  

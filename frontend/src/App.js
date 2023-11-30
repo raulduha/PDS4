@@ -109,7 +109,7 @@ function App() {
             element={<CreateEcommer />} 
           />
           <Route
-            path="/station"
+            path="/ecommers/update"
             element={isLoggedIn ? <UpdateEcommer /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
         </Routes>
