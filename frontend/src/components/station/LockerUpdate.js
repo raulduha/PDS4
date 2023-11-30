@@ -18,7 +18,7 @@ const LockerUpdate = ({ lockerId }) => {
   const { locker_id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/lockers/${lockerId}/`)
+    axios.get(`https://backend-p3.vercel.app/lockers/${lockerId}/`)
       .then(response => {
         setFormData(response.data);
       })
@@ -32,7 +32,7 @@ const LockerUpdate = ({ lockerId }) => {
   };
 
   const handleUpdate = () => {
-    axios.put(`http://127.0.0.1:8000/lockers/${lockerId}/update/`, formData)
+    axios.put(`https://backend-p3.vercel.app/lockers/${lockerId}/update/`, formData)
       .then(response => {
         console.log('Locker updated:', response.data);
         navigate(`/lockers/${lockerId}`);

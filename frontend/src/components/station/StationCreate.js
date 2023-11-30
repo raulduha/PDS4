@@ -15,7 +15,9 @@ const StationCreate = () => {
   };
 
   const handleCreate = () => {
-    axios.post('http://127.0.0.1:8000/stations/create/', formData)
+    const { name, address } = formData;
+
+    axios.post(`https://backend-p3.vercel.app/stations/create/${name}/${address}/`)
       .then(response => {
         console.log('Station created:', response.data);
         navigate('/stations');

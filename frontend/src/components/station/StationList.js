@@ -8,12 +8,12 @@ const StationList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/stations/')
+    axios.get('https://backend-p3.vercel.app/stations/')
       .then(response => {
         setStations(response.data);
 
         const promises = response.data.map(station => (
-          axios.get(`http://127.0.0.1:8000/lockers/?station_id=${station.id}`)
+          axios.get(`https://backend-p3.vercel.app/lockers/?station_id=${station.id}`)
         ));
 
         Promise.all(promises)
@@ -35,7 +35,7 @@ const StationList = () => {
   }, []);
 
   const handleDelete = (stationId) => {
-    axios.delete(`http://127.0.0.1:8000/stations/${stationId}/delete/`)
+    axios.delete(`https://backend-p3.vercel.app/stations/${stationId}/delete/`)
       .then(response => {
         console.log('Station deleted:', response.data);
         setStations(stations.filter(station => station.id !== stationId));
