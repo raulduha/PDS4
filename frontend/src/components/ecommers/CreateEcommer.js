@@ -11,11 +11,11 @@ const CreateEcommer = () => {
   const [key, setKey] = useState('');
 
   const handleCreateEcommer = () => {
+    const encodedName = encodeURIComponent(name);
+    const encodedKey = encodeURIComponent(key);
+
     axios
-      .post('http://127.0.0.1:8000/ecommerces/create/', {
-        name: name,
-        key: key,
-      })
+      .post(`https://backend-p3.vercel.app/ecommerces/create/${encodedName}/${encodedKey}/`)
       .then(response => {
         // Después de crear un nuevo e-commer, navegar de nuevo a la vista principal
         navigate('/ecommers');
