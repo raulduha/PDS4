@@ -14,7 +14,7 @@ const Bitacora = () => {
     // Define an async function to fetch bitacora data
     const fetchBitacoraData = async () => {
       try {
-        const response = await axios.get(`https://backend-p3.vercel.app/reservations/${id}`);
+        const response = await axios.get(`https://backend-p3.vercel.app/reservations/${id}/`);
         setBitacoraData(response.data);
       } catch (error) {
         console.error('Error fetching bitacora data:', error);
