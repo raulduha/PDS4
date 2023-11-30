@@ -31,7 +31,7 @@ const OperatorCreate = () => {
 
     try {
       // Utilizar la URL proporcionada para enviar la solicitud POST
-      const url = `https://backend-p3.vercel.app/operators/create/${name}/${last_name}/${email}/${password}/${is_supervisor}`;
+      const url = `https://backend-p3.vercel.app/operators/create/${name}/${last_name}/${email}/${password}/${is_supervisor}/`;
       const response = await axios.post(url);
 
       console.log('Operador creado:', response.data);
