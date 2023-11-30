@@ -15,7 +15,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Ecommers from './components/ecommers/Ecommers';
 import UpdateEcommer from './components/ecommers/UpdateEcommer';  // Importa la nueva vista
 import CreateEcommer from './components/ecommers/CreateEcommer';  // Importa la nueva vista
-
+import LockerCreate from './components/station/LockerCreate';
+import LockerList from './components/station/LockerList';
+import StationCreate from './components/station/StationCreate';
+import StationList from './components/station/StationList';
+import StationView from './components/station/StationView';
+import StationUpdate from './components/station/StationUpdate';
+import LockerView from './components/station/LockerView';
+import LockerUpdate from './components/station/LockerUpdate';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -60,22 +67,50 @@ function App() {
             path="/ecommers"
             element={isLoggedIn ? <Ecommers /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
-          {/* Nueva ruta para la vista de actualización de e-commers */}
           <Route
             path="/ecommers/:ecommerce_id/update"
             element={isLoggedIn ? <UpdateEcommer /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
-          <Route 
-            path="/ecommers/:ecommerce_id/update" 
-            element={<UpdateEcommer />} 
+          {/* Nueva ruta para la vista de actualización de e-commers */}
+          <Route
+            path="/stations"
+            element={isLoggedIn ? <StationList /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/stations/:station_id"
+            element={isLoggedIn ? <StationView /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/stations/:station_id/update"
+            element={isLoggedIn ? <StationUpdate /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/stations/create"
+            element={isLoggedIn ? <StationCreate /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/lockers"
+            element={isLoggedIn ? <LockerList /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/lockers/:locker_id"
+            element={isLoggedIn ? <LockerView /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/lockers/:locker_id/update"
+            element={isLoggedIn ? <LockerUpdate /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/lockers/create"
+            element={isLoggedIn ? <LockerCreate /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
           <Route 
             path="/ecommers/create"
             element={<CreateEcommer />} 
           />
-          <Route 
-            path="/ecommers/create" 
-            element={<CreateEcommer />} 
+          <Route
+            path="/station"
+            element={isLoggedIn ? <UpdateEcommer /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
         </Routes>
       </div>
