@@ -1,0 +1,31 @@
+/* StationView.css */
+
+.station-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .locker-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .locker-table th, .locker-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .locker-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .locker-actions {
+    margin-top: 10px;
+  }
+  
+  .locker-actions button {
+    margin-right: 10px;
+  }
+  

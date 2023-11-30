@@ -1,3 +1,4 @@
+// LockerList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,7 +35,10 @@ const LockerList = () => {
         {lockers.map(locker => (
           <li key={locker.id}>
             <strong>Status:</strong> {locker.status}, <strong>Is Empty:</strong> {locker.is_empty ? 'Yes' : 'No'}
-            <Link to={`/lockers/${locker.id}/view`}>View</Link>
+            {`${locker.size_width}x${locker.size_height}x${locker.size_length}`}
+            <Link to={`/lockers/${locker.id}/view`}>
+              <button>View Details</button>
+            </Link>
             <button onClick={() => handleDelete(locker.id)}>Delete</button>
             <button onClick={() => navigate(`/lockers/${locker.id}/update`)}>Edit</button>
           </li>
