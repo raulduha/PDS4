@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Ecommers = () => {
   const [ecommers, setEcommers] = useState([]);
@@ -7,7 +8,6 @@ const Ecommers = () => {
   const [key, setKey] = useState('');
 
   useEffect(() => {
-    // Llamada a la API para obtener la lista de e-commers
     axios.get('http://127.0.0.1:8000/ecommerces/')
       .then(response => {
         setEcommers(response.data);
@@ -15,18 +15,15 @@ const Ecommers = () => {
       .catch(error => {
         console.error('Error al obtener la lista de e-commers:', error);
       });
-  }, [ecommers]); // Agrega ecommers como una dependencia
+  }, [ecommers]);
 
   const handleCreateEcommer = () => {
-    // Llamada a la API para crear un nuevo e-commer
     axios.post('http://127.0.0.1:8000/ecommerces/create/', {
       name: name,
       key: key
     })
       .then(response => {
-        // Actualizar la lista de e-commers después de crear uno nuevo
         setEcommers([...ecommers, response.data]);
-        // Limpiar los campos de entrada después de la creación
         setName('');
         setKey('');
       })
@@ -36,21 +33,13 @@ const Ecommers = () => {
   };
 
   const handleDeleteEcommer = (ecommerceId) => {
-    // Llamada a la API para eliminar un e-commer
     axios.delete(`http://127.0.0.1:8000/ecommerces/${ecommerceId}/delete/`)
       .then(response => {
-        // Actualizar la lista de e-commers después de la eliminación
         setEcommers(ecommers.filter(ecommer => ecommer.id !== ecommerceId));
       })
       .catch(error => {
         console.error('Error al eliminar el e-commer:', error);
       });
-  };
-
-  const handleUpdateEcommer = (ecommerceId) => {
-    // Lógica para actualizar un e-commer (puedes implementar según tus necesidades)
-    // Por ejemplo, podrías mostrar un modal con un formulario de actualización.
-    // La implementación específica dependerá de tu diseño y flujo de la aplicación.
   };
 
   return (
@@ -62,7 +51,10 @@ const Ecommers = () => {
         {ecommers.map(ecommer => (
           <li key={ecommer.id}>
             {ecommer.name} - {ecommer.key}
-            <button onClick={() => handleUpdateEcommer(ecommer.id)}>Actualizar</button>
+            {/* Usa Link para navegar a la vista de actualización */}
+            <Link to={`/ecommers/${ecommer.id}/update`}>
+              <button>Actualizar</button>
+            </Link>
             <button onClick={() => handleDeleteEcommer(ecommer.id)}>Eliminar</button>
           </li>
         ))}

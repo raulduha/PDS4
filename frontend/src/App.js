@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/navbar/Navbar';
@@ -12,6 +13,7 @@ import OperatorUpdate from './components/adminDashboard/OperatorUpdate';
 import AdminDashboard from './components/adminDashboard/AdminDashboard';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Ecommers from './components/ecommers/Ecommers';
+import UpdateEcommer from './components/ecommers/UpdateEcommer';  // Importa la nueva vista
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,7 +59,16 @@ function App() {
             path="/ecommers"
             element={isLoggedIn ? <Ecommers /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
-          <Route path="/login" element={<LoginPage onLogin={() => setIsLoggedIn(true)} />} />
+          {/* Nueva ruta para la vista de actualización de e-commers */}
+          <Route
+            path="/ecommers/:ecommerce_id/update"
+            element={isLoggedIn ? <UpdateEcommer /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route 
+            path="/ecommers/:ecommerce_id/update" 
+            element={<UpdateEcommer />} 
+          />
+
         </Routes>
       </div>
     </Router>
