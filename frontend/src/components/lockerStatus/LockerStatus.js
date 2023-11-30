@@ -13,12 +13,6 @@ const AWSSection = ({ setAWSLockers }) => {
     const accessKeyId = "AKIAU6BRFNUSIDVECJFA";
     const secretAccessKey = "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";
 
-
-    const roleArn = "arn:aws:iam::638141874484:user/pds-p3";
-    const awsRegion = "sa-east-1";
-    const externalId = "EB8SGcKqUd3AiNWBopGFwIVF0xkqQW";
-    const ThingName = "EVT2xB96Dx2gyO2ltRbuB";
-
     const exampleJSON = {
         "roles": [
           {
