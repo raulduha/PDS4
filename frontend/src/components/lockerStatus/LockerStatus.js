@@ -3,14 +3,16 @@ import axios from 'axios';
 import AWS from 'aws-sdk';
 import './LockerStatus.css';
 
-// Componente para manejar los datos de AWS IoT
 const AWSSection = ({ setAWSLockers }) => {
     const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
-    const awsRegion = 'us-east-2';
-    const accessKeyId = 'AKIAU6BRFNUSIDVECJFA';
-    const secretAccessKey = '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';
+    const awsRegion = "us-east-2";
+    const accessKeyId = "AKIAU6BRFNUSIDVECJFA";
+    const secretAccessKey = "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";
 
-    AWS.config.update({
+    const roleArn = "arn:aws:iam::339405532452:role/pds_12";
+    const roleSessionName = "session";
+
+    const sts = new AWS.STS({
         region: awsRegion,
         credentials: new AWS.Credentials({
             accessKeyId: accessKeyId,
@@ -18,36 +20,56 @@ const AWSSection = ({ setAWSLockers }) => {
         })
     });
 
-    const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
-
     useEffect(() => {
-        const params = {
-            thingName: 'my_esp_lamp' // Reemplaza con el nombre correcto de tu dispositivo AWS IoT
+        const assumeRoleParams = {
+            RoleArn: roleArn,
+            RoleSessionName: roleSessionName
         };
 
-        iotHandler.getThingShadow(params, (err, data) => {
+        sts.assumeRole(assumeRoleParams, (err, data) => {
             if (err) {
-                console.error('Error al obtener el estado de los lockers desde AWS IoT:', err);
+                console.error('Error assuming role:', err);
             } else {
-                const lockerState = JSON.parse(data.payload);
-                const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => {
-                    const localId = parseInt(lockerId.replace('l', '')); // Convierte el ID de AWS a ID local
-                    return {
-                        id: localId,
-                        lock: lockerState.state.reported.lockers[lockerId].lock,
-                        door: lockerState.state.reported.lockers[lockerId].door,
-                        content: lockerState.state.reported.lockers[lockerId].content
-                    };
+                const assumedCredentials = {
+                    accessKeyId: data.Credentials.AccessKeyId,
+                    secretAccessKey: data.Credentials.SecretAccessKey,
+                    sessionToken: data.Credentials.SessionToken
+                };
+
+                const iotHandler = new AWS.IotData({
+                    endpoint: awsEndpoint,
+                    credentials: assumedCredentials
                 });
 
-                setAWSLockers(lockersState);
+                const params = {
+                    thingName: 'my_esp_lamp'
+                };
+
+                iotHandler.getThingShadow(params, (err, data) => {
+                    if (err) {
+                        console.error('Error al obtener el estado de los lockers desde AWS IoT:', err);
+                    } else {
+                        const lockerState = JSON.parse(data.payload);
+                        const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => {
+                            const localId = parseInt(lockerId.replace('l', '')); // Convierte el ID de AWS a ID local
+                            return {
+                                id: localId,
+                                lock: lockerState.state.reported.lockers[lockerId].lock,
+                                door: lockerState.state.reported.lockers[lockerId].door,
+                                content: lockerState.state.reported.lockers[lockerId].content
+                            };
+                        });
+
+                        setAWSLockers(lockersState);
+                    }
+                });
             }
         });
-    }, [setAWSLockers]);
+    }, [setAWSLockers, awsEndpoint, awsRegion, accessKeyId, secretAccessKey, roleArn, roleSessionName]);
 
     return null; // No se renderiza nada en el DOM
 };
-
+  
 // Componente principal que muestra los datos de Vercel
 const LockerStatus = () => {
     const [AWSLockers, setAWSLockers] = useState([]);
