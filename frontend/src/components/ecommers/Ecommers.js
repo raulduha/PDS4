@@ -17,21 +17,6 @@ const Ecommers = () => {
       });
   }, [ecommers]);
 
-  const handleCreateEcommer = () => {
-    axios.post('http://127.0.0.1:8000/ecommerces/create/', {
-      name: name,
-      key: key
-    })
-      .then(response => {
-        setEcommers([...ecommers, response.data]);
-        setName('');
-        setKey('');
-      })
-      .catch(error => {
-        console.error('Error al crear un nuevo e-commer:', error);
-      });
-  };
-
   const handleDeleteEcommer = (ecommerceId) => {
     axios.delete(`http://127.0.0.1:8000/ecommerces/${ecommerceId}/delete/`)
       .then(response => {
@@ -59,14 +44,11 @@ const Ecommers = () => {
           </li>
         ))}
       </ul>
-
-      {/* Formulario para crear un nuevo e-commer */}
       <div>
-        <label>Nombre del E-commerce:</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-        <label>Clave del E-commerce:</label>
-        <input type="text" value={key} onChange={(e) => setKey(e.target.value)} />
-        <button onClick={handleCreateEcommer}>Crear E-commerce</button>
+        {/* Botón para ir a la vista de creación */}
+        <Link to="/ecommers/create">
+            <button>Crear Nuevo E-commerce</button>
+        </Link>
       </div>
     </div>
   );

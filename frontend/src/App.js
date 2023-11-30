@@ -14,6 +14,7 @@ import AdminDashboard from './components/adminDashboard/AdminDashboard';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Ecommers from './components/ecommers/Ecommers';
 import UpdateEcommer from './components/ecommers/UpdateEcommer';  // Importa la nueva vista
+import CreateEcommer from './components/ecommers/CreateEcommer';  // Importa la nueva vista
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -68,7 +69,14 @@ function App() {
             path="/ecommers/:ecommerce_id/update" 
             element={<UpdateEcommer />} 
           />
-
+          <Route 
+            path="/ecommers/create"
+            element={<CreateEcommer />} 
+          />
+          <Route 
+            path="/ecommers/create" 
+            element={<CreateEcommer />} 
+          />
         </Routes>
       </div>
     </Router>

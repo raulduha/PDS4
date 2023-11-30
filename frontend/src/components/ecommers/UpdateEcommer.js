@@ -1,9 +1,8 @@
-// Importa las dependencias necesarias
+// UpdateEcommer.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateEcommer.css';
-
 
 const UpdateEcommer = () => {
   const { ecommerce_id } = useParams();
@@ -46,7 +45,7 @@ const UpdateEcommer = () => {
   };
 
   return (
-    <div>
+    <div className="update-ecommers-container">
       <h2>Actualizar E-commerce</h2>
 
       <div>
@@ -59,8 +58,8 @@ const UpdateEcommer = () => {
         <input type="text" value={key} onChange={(e) => setKey(e.target.value)} />
       </div>
 
-      <button onClick={handleUpdateEcommer}>Actualizar E-commerce</button>
-      <button onClick={handleCancel}>Cancelar</button>
+      <button className="save-button" onClick={handleUpdateEcommer}>Actualizar E-commerce</button>
+      <button className="cancel-button" onClick={handleCancel}>Cancelar</button>
     </div>
   );
 };
