@@ -8,7 +8,7 @@ const StationCharts = ({ stationId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://backend-p3.vercel.app/station/info/actual/${stationId}/`);
+        const response = await axios.get(`https://backend-p3.vercel.app/station/info/actual/1/`);
         setStationInfo(response.data);
       } catch (error) {
         console.error('Error fetching station info:', error);
