@@ -74,7 +74,7 @@ const handleAccess = () => {
 
   setLoading(true);
 
-  const awsLockerId = `l${lockerNumber}`;
+  const awsLockerId = `${lockerNumber}`;
   const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
 
   const params = {
@@ -105,7 +105,7 @@ const handleAccess = () => {
 
       // Realizar la solicitud al backend de Django
       const djangoLockerId = `${lockerNumber}`;
-      const endpoint = `http://127.0.0.1:8000/locker/${userType === 'client' ? 'abrir' : 'cerrar'}/${djangoLockerId}/${password}/`;
+      const endpoint = `https://backend-p3.vercel.app/locker/${userType === 'client' ? 'abrir' : 'cerrar'}/${djangoLockerId}/${password}/`;
 
       axios.post(endpoint)
         .then((response) => {
