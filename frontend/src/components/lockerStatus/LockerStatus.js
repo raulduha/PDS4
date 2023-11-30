@@ -1,54 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AWS from 'aws-sdk';
+
 import './LockerStatus.css';
+import {
+    IoTDataPlaneClient,
+    GetThingShadowCommand,
+} from "@aws-sdk/client-iot-data-plane"
 
-// Componente para manejar los datos de AWS IoT
+import { STSClient, AssumeRoleCommand } from "@aws-sdk/client-sts"
+
 const AWSSection = ({ setAWSLockers }) => {
-    const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
-    const awsRegion = 'us-east-2';
-    const accessKeyId = 'AKIAU6BRFNUSIDVECJFA';
-    const secretAccessKey = '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';
+    const accessKeyId = "AKIAU6BRFNUSIDVECJFA";
+    const secretAccessKey = "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";
 
-    AWS.config.update({
-        region: awsRegion,
-        credentials: new AWS.Credentials({
-            accessKeyId: accessKeyId,
-            secretAccessKey: secretAccessKey
-        })
-    });
-
-    const iotHandler = new AWS.IotData({ endpoint: awsEndpoint });
+    const exampleJSON = {
+        "roles": [
+            {
+                "roleArn": "arn:aws:iam::339405532452:role/pds_12",
+                "awsRegion": "us-east-2",
+                "externalId": "4704c389e3fe44e895b5",
+                "thingName": "my_esp_lamp"
+            },
+            {
+                "roleArn": "arn:aws:iam::638141874484:role/pds-p3-role-share",
+                "awsRegion": "sa-east-1",
+                "externalId": "EB8SGcKqUd3AiNWBopGFwIVF0xkqQW",
+                "thingName": "EVT2xB96Dx2gyO2ltRbuB"
+            },
+            {
+                "roleArn": "arn:aws:iam::078243114425:role/pds-group-role",
+                "awsRegion": "us-east-2",
+                "externalId": "G9",
+                "thingName": "document_bank"
+            }]
+    }
 
     useEffect(() => {
-        const params = {
-            thingName: 'my_esp_lamp' // Reemplaza con el nombre correcto de tu dispositivo AWS IoT
-        };
-
-        iotHandler.getThingShadow(params, (err, data) => {
-            if (err) {
-                console.error('Error al obtener el estado de los lockers desde AWS IoT:', err);
-            } else {
-                const lockerState = JSON.parse(data.payload);
-                const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => {
-                    const localId = parseInt(lockerId.replace('', '')); // Convierte el ID de AWS a ID local
-                    return {
-                        id: localId,
-                        lock: lockerState.state.reported.lockers[lockerId].lock,
-                        door: lockerState.state.reported.lockers[lockerId].door,
-                        content: lockerState.state.reported.lockers[lockerId].content
-                    };
+        const fetchAWSShadow = async (userInfo) => {
+            try {
+                const sts = new STSClient({
+                    region: "us-east-2",
+                    credentials: { accessKeyId, secretAccessKey }
                 });
 
-                setAWSLockers(lockersState);
-            }
-        });
-    }, [setAWSLockers]);
+                const assumeRoleCommand = new AssumeRoleCommand({
+                    RoleArn: userInfo.roleArn,
+                    ExternalId: userInfo.externalId,
+                    RoleSessionName: "session"
+                });
 
-    return null; // No se renderiza nada en el DOM
+                const assumedRole = await sts.send(assumeRoleCommand);
+
+                if (!assumedRole) {
+                    throw new Error('Error assuming role');
+                }
+
+                const assumedCredentials = {
+                    accessKeyId: assumedRole.Credentials.AccessKeyId,
+                    secretAccessKey: assumedRole.Credentials.SecretAccessKey,
+                    sessionToken: assumedRole.Credentials.SessionToken
+                };
+
+                const iotHandler = new IoTDataPlaneClient({
+                    region: userInfo.awsRegion,
+                    credentials: assumedCredentials
+                });
+
+                const params = { thingName: userInfo.thingName };
+                const getShadowCommand = new GetThingShadowCommand(params);
+                const shadow = await iotHandler.send(getShadowCommand);
+
+                if (!shadow) {
+                    throw new Error('Error getting shadow from AWS IoT');
+                }
+                const payload = new TextDecoder().decode(shadow.payload)
+                const lockerState = JSON.parse(payload);
+
+                console.log(lockerState.state.desired);
+
+                const awsLockers = Object.entries(lockerState.state.reported.lockers).map(
+                    ([lockerId, lockerData]) => ({
+                        id: lockerId,
+                        lock: lockerData.lock,
+                        door: lockerData.door,
+                        content: lockerData.content,
+                        thingName: userInfo.thingName, // Adding thingName for differentiation
+                    })
+                );
+
+                setAWSLockers((prevLockers) => [...prevLockers, ...awsLockers]);
+
+            } catch (error) {
+                console.error('An error occurred:', error.message);
+            }
+        };
+
+        const fetchAllAWSShadows = async () => {
+            await Promise.all(exampleJSON.roles.map((role) => fetchAWSShadow(role)));
+        };
+
+        fetchAllAWSShadows();
+
+    }, [])
+    return null;
 };
 
-// Componente principal que muestra los datos de Vercel
 const LockerStatus = () => {
     const [AWSLockers, setAWSLockers] = useState([]);
     const [VercelLockers, setVercelLockers] = useState([]);
@@ -73,16 +129,18 @@ const LockerStatus = () => {
                     <table className="lockerTable">
                         <thead>
                             <tr className="tableHeader">
-                                <th>Locker ID</th>
-                                <th>Estado Candado</th>
-                                <th>Estado Puerta</th>
+                                <th>Locker_ID</th>
+                                <th>Thing_Name</th>
+                                <th>Estado_Candado</th>
+                                <th>Estado_Puerta</th>
                                 <th>Contenido</th>
                             </tr>
                         </thead>
                         <tbody>
                             {AWSLockers.map(locker => (
-                                <tr key={locker.id} className="lockerItem">
+                                <tr key={`${locker.thingName}_${locker.id}`} className="lockerItem">
                                     <td>{locker.id}</td>
+                                    <td>{locker.thingName}</td>
                                     <td>{locker.lock}</td>
                                     <td>{locker.door}</td>
                                     <td>{locker.content}</td>
@@ -99,10 +157,10 @@ const LockerStatus = () => {
                     <table className="lockerTable">
                         <thead>
                             <tr className="tableHeader">
-                                <th>Locker ID</th>
+                                <th>Locker_ID</th>
                                 <th>Estados</th>
-                                <th>Cliente Email</th>
-                                <th>Operador Email</th>
+                                <th>Cliente_Email</th>
+                                <th>Operador_Email</th>
                             </tr>
                         </thead>
                         <tbody>
