@@ -9,7 +9,7 @@ const LockerView = () => {
   const { locker_id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/lockers/${locker_id}/`)
+    axios.get(`https://backend-p3.vercel.app/lockers/${locker_id}/`)
       .then(response => {
         console.log(response.data); // Agregamos un log para verificar la respuesta del servidor
         setLockerDetails(response.data);

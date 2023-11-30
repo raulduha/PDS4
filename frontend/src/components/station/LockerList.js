@@ -18,7 +18,7 @@ const LockerList = () => {
   }, []);
 
   const handleDelete = (lockerId) => {
-    axios.delete(`http://127.0.0.1:8000/lockers/${lockerId}/delete/`)
+    axios.delete(`https://backend-p3.vercel.app/lockers/${lockerId}/delete/`)
       .then(response => {
         console.log('Locker deleted:', response.data);
         setLockers(lockers.filter(locker => locker.id !== lockerId));

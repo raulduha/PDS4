@@ -11,7 +11,7 @@ const StationView = () => {
   const { station_id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/stations/${station_id}/`)
+    axios.get(`https://backend-p3.vercel.app/stations/${station_id}/`)
       .then(response => {
         console.log(response.data);
         setStationDetails(response.data.station);
@@ -30,7 +30,7 @@ const StationView = () => {
 
   const handleDeleteLocker = (lockerId) => {
     // Lógica para eliminar un locker
-    axios.delete(`http://127.0.0.1:8000/lockers/${lockerId}/delete/`)
+    axios.delete(`https://backend-p3.vercel.app/lockers/${lockerId}/delete/`)
       .then(response => {
         // Actualizar la lista de lockers después de la eliminación
         setLockers(lockers.filter(locker => locker.id !== lockerId));

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './LockerCreate.css'; // Ajusta la ruta según tu estructura de carpetas
+import './LockerCreate.css'; // Adjust the path based on your folder structure
 
 const LockerCreate = () => {
   const navigate = useNavigate();
@@ -13,11 +13,9 @@ const LockerCreate = () => {
   const [selectedStation, setSelectedStation] = useState('');
 
   useEffect(() => {
-    // Obtener la lista de estaciones al cargar el componente
-    axios.get('http://127.0.0.1:8000/stations/')
+    axios.get('https://backend-p3.vercel.app/stations/')
       .then(response => {
         setStations(response.data);
-        // Establecer la primera estación como la seleccionada por defecto
         if (response.data.length > 0) {
           setSelectedStation(response.data[0].id);
         }
@@ -29,15 +27,11 @@ const LockerCreate = () => {
 
   const handleCreateLocker = () => {
     axios
-      .post('http://127.0.0.1:8000/lockers/create/', {
-        station_id: selectedStation,
-        size_width: sizeWidth,
-        size_height: sizeHeight,
+      .post(`https://backend-p3.vercel.app/lockers/create/${selectedStation}/${sizeWidth}/${sizeHeight}/`, {
         size_length: sizeLength,
       })
       .then(response => {
         console.log('Locker created:', response.data);
-        // Después de crear un nuevo locker, navegar de nuevo a la vista de la estación
         navigate(`/stations/${selectedStation}`);
       })
       .catch(error => {
