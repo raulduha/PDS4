@@ -72,4 +72,10 @@
   button:hover {
     background-color: #218838;
   }
+
+  .create-button {
+    background-color: #3498db; /* Puedes cambiar el código de color según tus preferencias */
+    color: #ffffff; /* Color del texto */
+    /* Otros estilos de diseño según sea necesario */
+  }
   

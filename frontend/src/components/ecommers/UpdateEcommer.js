@@ -13,7 +13,7 @@ const UpdateEcommer = () => {
 
   useEffect(() => {
     // Llamada a la API para obtener los datos del e-commer específico
-    axios.get(`http://127.0.0.1:8000/ecommerces/${ecommerce_id}/`)
+    axios.get(`https://backend-p3.vercel.app/ecommerces/${ecommerce_id}/`)
       .then(response => {
         const ecommerData = response.data;
         setName(ecommerData.name);
@@ -26,7 +26,7 @@ const UpdateEcommer = () => {
 
   const handleUpdateEcommer = () => {
     // Llamada a la API para actualizar los datos del e-commer
-    axios.put(`http://127.0.0.1:8000/ecommerces/${ecommerce_id}/update/`, {
+    axios.put(`https://backend-p3.vercel.app/ecommerces/update/${ecommerce_id}/${name}/${key}/`, {
       name: name,
       key: key
     })
@@ -41,7 +41,7 @@ const UpdateEcommer = () => {
 
   const handleCancel = () => {
     // Navegar atrás en la pila de historial
-    navigate(-1);
+    navigate('/ecommers');
   };
 
   return (
