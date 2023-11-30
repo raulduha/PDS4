@@ -8,7 +8,7 @@ const LockerReservation = () => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/reservations/')
+    axios.get(`https://pds-4.vercel.app/reservations/`)
       .then(response => {
         // Ordenar las reservas de más grande a más chico por ID
         const sortedReservations = response.data.sort((a, b) => b.id - a.id);
@@ -19,13 +19,7 @@ const LockerReservation = () => {
       });
   }, []);
 
-  // Función para calcular el tiempo entre dos fechas en minutos
-  const calculateTimeDifference = (start, end) => {
-    const startTime = new Date(start);
-    const endTime = new Date(end);
-    const difference = (endTime - startTime) / (1000 * 60); // en minutos
-    return difference;
-  };
+
 
   return (
     <div className="reservation-container">

@@ -20,7 +20,7 @@ const OperatorUpdate = () => {
 
   useEffect(() => {
     console.log(operator_id); // Agrega esto para verificar el ID del operador
-    axios.get(`http://127.0.0.1:8000/operators/${operator_id}/`)
+    axios.get(`https://pds-4.vercel.app/operators/${operator_id}/`)
       .then(response => {
         setFormData(response.data);
         setLoading(false);
@@ -38,7 +38,7 @@ const OperatorUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Enviar la solicitud PUT para actualizar el operador
-    axios.put(`http://127.0.0.1:8000/operators/${operator_id}/update/`, formData)
+    axios.put(`https://pds-4.vercel.app/operators/${operator_id}/update/`, formData)
       .then(response => {
         console.log('Operador actualizado:', response.data);
         // Realizar acciones adicionales después de la actualización si es necesario
