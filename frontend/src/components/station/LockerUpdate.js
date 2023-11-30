@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams  } from 'react-router-dom';
 
 const LockerUpdate = ({ lockerId }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +15,7 @@ const LockerUpdate = ({ lockerId }) => {
   });
 
   const navigate = useNavigate();
+  const { locker_id } = useParams();
 
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/lockers/${lockerId}/`)
@@ -39,6 +40,11 @@ const LockerUpdate = ({ lockerId }) => {
       .catch(error => {
         console.error('Error updating locker:', error);
       });
+  };
+
+  const handleCancelEdit = () => {
+    // Al cancelar, simplemente navegar de nuevo a la vista del locker sin realizar cambios
+    navigate(`/lockers/${locker_id}`);
   };
 
   return (
@@ -67,6 +73,7 @@ const LockerUpdate = ({ lockerId }) => {
         <input type="checkbox" name="is_empty" checked={formData.is_empty} onChange={() => setFormData({ ...formData, is_empty: !formData.is_empty })} />
 
         <button type="button" onClick={handleUpdate}>Update Locker</button>
+        <button className="cancel-button" onClick={handleCancelEdit}>Cancel</button>
       </form>
     </div>
   );

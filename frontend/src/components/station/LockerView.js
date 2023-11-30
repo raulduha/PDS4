@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 
-
 const LockerView = () => {
   const [lockerDetails, setLockerDetails] = useState({});
   const [loading, setLoading] = useState(true);
@@ -12,7 +11,7 @@ const LockerView = () => {
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/lockers/${locker_id}/`)
       .then(response => {
-        console.log(response.data);
+        console.log(response.data); // Agregamos un log para verificar la respuesta del servidor
         setLockerDetails(response.data);
         setLoading(false);
       })
@@ -29,8 +28,34 @@ const LockerView = () => {
   return (
     <div>
       <h2>Locker Details</h2>
-      <p><strong>ID:</strong> {lockerDetails.id}</p>
-      {/* Agrega más detalles según tus necesidades */}
+      <table>
+        <tbody>
+          <tr>
+            <td>ID:</td>
+            <td>{lockerDetails.id}</td>
+          </tr>
+          <tr>
+            <td>Width:</td>
+            <td>{lockerDetails.size_width}</td>
+          </tr>
+          <tr>
+            <td>Height:</td>
+            <td>{lockerDetails.size_height}</td>
+          </tr>
+          <tr>
+            <td>Length:</td>
+            <td>{lockerDetails.size_length}</td>
+          </tr>
+          {/* Agrega más filas según las características del locker */}
+        </tbody>
+      </table>
+      <Link to={`/lockers/${locker_id}/update`}>
+        <button>Edit Locker</button>
+      </Link>
+      <Link to={`/stations`}>
+        <button className="cancel-button">Back to Stations</button>
+      </Link>
+  
     </div>
   );
 };
