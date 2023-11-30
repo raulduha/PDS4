@@ -4,25 +4,36 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LabelList 
 
 const StationCharts = ({ stationId }) => {
   const [stationInfo, setStationInfo] = useState(null);
+  const [lockerInfo1, setLockerInfo1] = useState(null);
+  const [lockerInfo2, setLockerInfo2] = useState(null);
+  const [lockerInfo3, setLockerInfo3] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://backend-p3.vercel.app/station/info/actual/1/`);
-        setStationInfo(response.data);
+        const stationResponse = await axios.get(`https://backend-p3.vercel.app/station/info/actual/1/`);
+        setStationInfo(stationResponse.data);
+
+        const lockerResponse1 = await axios.get(`https://backend-p3.vercel.app/locker/info/actual/1/`);
+        setLockerInfo1(lockerResponse1.data);
+
+        const lockerResponse2 = await axios.get(`https://backend-p3.vercel.app/locker/info/actual/2/`);
+        setLockerInfo2(lockerResponse2.data);
+
+        const lockerResponse3 = await axios.get(`https://backend-p3.vercel.app/locker/info/actual/3/`);
+        setLockerInfo3(lockerResponse3.data);
       } catch (error) {
-        console.error('Error fetching station info: ', error);
+        console.error('Error fetching data: ', error);
       }
     };
 
     fetchData();
   }, [stationId]);
 
-  if (!stationInfo) {
+  if (!stationInfo || !lockerInfo1 || !lockerInfo2 || !lockerInfo3) {
     return <div>Loading...</div>;
   }
 
-  // Data for the daily charts
   const dataUsage = [
     { name: 'Daily porcentaje de uso casilleros', value: stationInfo.usage_percentage },
   ];
@@ -35,7 +46,6 @@ const StationCharts = ({ stationId }) => {
     { name: 'Daily Media carga paquete y retiro (Min)', value: stationInfo.avg_time_loading_to_pickup },
   ];
 
-  // Data for the historical charts (assuming a 5% increase)
   const historicalIncreasePercentage = 1.05;
 
   const historicalDataUsage = dataUsage.map(entry => ({
@@ -98,6 +108,62 @@ const StationCharts = ({ stationId }) => {
           width={400}
           height={200}
           data={dataLoadingToPickup}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#ffc658">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <h2>Daily Locker Charts</h2>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 1 Daily porcentaje de uso casilleros', value: lockerInfo1.usage_percentage }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#8884d8">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 2 Daily porcentaje de uso casilleros', value: lockerInfo2.usage_percentage }]}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#82ca9d">
+            <LabelList dataKey="value" position="top" />
+          </Bar>
+        </BarChart>
+      </div>
+
+      <div>
+        <BarChart
+          width={400}
+          height={200}
+          data={[{ name: 'Locker 3 Daily porcentaje de uso casilleros', value: lockerInfo3.usage_percentage }]}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
