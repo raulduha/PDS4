@@ -48,15 +48,17 @@ function App() {
       <div className="App">
         <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         <Routes>
+        <Route path="/login" element={<LoginPage onLogin={() => setIsLoggedIn(true)} />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/registration" element={<UserRegistration />} />
           <Route path="/reservation" element={<LockerReservation />} />
           <Route path="/adashboard" element={<AdminDashboard />} />
           <Route path="/retrieval" element={<PackageRetrieval />} />
           <Route
-            path="/status"
-            element={isLoggedIn ? <LockerStatus /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
-          />
+  path="/status"
+  element={isLoggedIn ? <LockerStatus /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+/>
+
           <Route
             path="/editOP/:operator_id"
             element={isLoggedIn ? <OperatorUpdate /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
