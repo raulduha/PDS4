@@ -8,7 +8,7 @@ const OperatorList = ({ stations, onOperatorClick }) => {
 
   useEffect(() => {
     // Obtener la lista de operadores al cargar el componente
-    axios.get('http://127.0.0.1:8000/operators/')
+    axios.get(`https://backend-p3.vercel.app/operators/`)
       .then(response => {
         setOperators(response.data);
         setLoading(false);
@@ -21,7 +21,7 @@ const OperatorList = ({ stations, onOperatorClick }) => {
 
   const handleDeleteClick = (operatorId) => {
     // Lógica para eliminar el operador
-    axios.delete(`http://127.0.0.1:8000/operators/${operatorId}/delete/`)
+    axios.delete(`https://backend-p3.vercel.app/operators/${operatorId}/delete/`)
       .then(response => {
         console.log('Operador eliminado:', response.data);
         // Actualizar la lista de operadores después de la eliminación si es necesario

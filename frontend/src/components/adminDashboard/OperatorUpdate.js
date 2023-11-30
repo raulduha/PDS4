@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './OperatorUpdate.css';
-// Importa el hook useParams
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
 const OperatorUpdate = () => {
-  // Utiliza el hook useParams para obtener los parámetros de la URL
   const { operator_id } = useParams();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     last_name: '',
@@ -19,10 +19,17 @@ const OperatorUpdate = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(operator_id); // Agrega esto para verificar el ID del operador
-    axios.get(`http://127.0.0.1:8000/operators/${operator_id}/`)
+    console.log(operator_id);
+    axios.get(`https://backend-p3.vercel.app/operators/${operator_id}/`)
       .then(response => {
-        setFormData(response.data);
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          name: response.data.name || '', // Update the name field if it exists in the response
+          last_name: response.data.last_name || '', // Update the last_name field if it exists in the response
+          email: response.data.email || '', // Update the email field if it exists in the response
+          password: response.data.password || '', // Update the password field if it exists in the response
+          is_supervisor: response.data.is_supervisor || false, // Update the is_supervisor field if it exists in the response, default to false if missing
+        }));
         setLoading(false);
       })
       .catch(error => {
@@ -31,24 +38,27 @@ const OperatorUpdate = () => {
       });
   }, [operator_id]);
   
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Enviar la solicitud PUT para actualizar el operador
-    axios.put(`http://127.0.0.1:8000/operators/${operator_id}/update/`, formData)
+  
+    const encodedEmail = encodeURIComponent(formData.email);
+  
+    axios.put(`https://backend-p3.vercel.app/operators/update/${operator_id}/${formData.name}/${formData.last_name}/${encodedEmail}/${formData.password}/${formData.is_supervisor ? 'True' : 'False'}/`)
       .then(response => {
         console.log('Operador actualizado:', response.data);
-        // Realizar acciones adicionales después de la actualización si es necesario
         navigate('/adashboard');
-
       })
       .catch(error => {
         console.error('Error al actualizar el operador:', error);
       });
   };
+  
+  
 
   if (loading) {
     return <p>Cargando...</p>;
@@ -58,7 +68,6 @@ const OperatorUpdate = () => {
     <div>
       <h3>Actualizar Operador</h3>
       <form onSubmit={handleSubmit}>
-        {/* Campos del formulario */}
         <label>Nombre:</label>
         <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
 
