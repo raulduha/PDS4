@@ -26,7 +26,10 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
               <Link to="/adashboard">Dashboard</Link>
             </li>
             <li>
-              <Link to="/reservation">reservation</Link>
+              <Link to="/reservation">Reservation</Link>
+            </li>
+            <li>
+              <Link to="/ecommers">E-commers</Link>
             </li>
             <li>
               {/* Agrega un enlace para cerrar sesión */}

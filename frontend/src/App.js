@@ -11,6 +11,7 @@ import OperatorCreate from './components/adminDashboard/OperatorCreate';
 import OperatorUpdate from './components/adminDashboard/OperatorUpdate';
 import AdminDashboard from './components/adminDashboard/AdminDashboard';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Ecommers from './components/ecommers/Ecommers';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,6 +52,10 @@ function App() {
           <Route
             path="/createOP"
             element={isLoggedIn ? <OperatorCreate /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route
+            path="/ecommers"
+            element={isLoggedIn ? <Ecommers /> : <LoginPage onLogin={() => setIsLoggedIn(true)} />}
           />
           <Route path="/login" element={<LoginPage onLogin={() => setIsLoggedIn(true)} />} />
         </Routes>
