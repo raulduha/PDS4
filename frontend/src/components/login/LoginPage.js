@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Importa axios
+import axios from 'axios';
 import './LoginPage.css';
 
 const LoginPage = ({ onLogin }) => {
@@ -10,7 +10,16 @@ const LoginPage = ({ onLogin }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.get(`https://backend-p3.vercel.app/operators/login/${username}/${password}`);
+      // Configura Axios para que no incluya automáticamente el encabezado Origin
+      const axiosInstance = axios.create({
+        headers: {
+          'Content-Type': 'application/json',
+          // Puedes agregar otros encabezados personalizados si es necesario
+        },
+        // Configuración adicional de Axios si es necesario
+      });
+
+      const response = await axiosInstance.post(`https://backend-p3.vercel.app/operators/login/${username}/${password}/`);
 
       if (response.data) {
         // Almacena la información de autenticación en localStorage
