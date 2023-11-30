@@ -74,6 +74,14 @@ const StationView = () => {
           ))}
         </tbody>
       </table>
+      <div>
+      <Link to={`/lockers/create`}>
+        <button>Create Locker</button>
+      </Link>
+      <Link to={`/stations`}>
+        <button>Back</button>
+      </Link>
+      </div>
     </div>
   );
 };

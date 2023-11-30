@@ -25,6 +25,21 @@
     margin-top: 10px;
   }
   
+
+  /* Estilos para el botón Create Locker */
+  .station-container button {
+    background-color: #4caf50; /* Color de fondo verde */
+    color: white; /* Texto en blanco */
+    padding: 10px 15px; /* Ajuste del espacio interno */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  }
+  
+  .station-container button:hover {
+    background-color: #45a049; /* Cambia el color al pasar sobre el botón */
+  }
+  
   .locker-actions button {
     margin-right: 10px;
   }
