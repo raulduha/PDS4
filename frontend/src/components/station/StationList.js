@@ -6,16 +6,16 @@ const StationList = () => {
   const [stations, setStations] = useState([]);
   const [lockerCounts, setLockerCounts] = useState({});
   const navigate = useNavigate();
+
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/stations/')
       .then(response => {
         setStations(response.data);
-  
-        // Fetch locker counts for each station
+
         const promises = response.data.map(station => (
           axios.get(`http://127.0.0.1:8000/lockers/?station_id=${station.id}`)
         ));
-  
+
         Promise.all(promises)
           .then(lockersResponses => {
             const counts = lockersResponses.map(response => response.data.length);
@@ -33,7 +33,6 @@ const StationList = () => {
         console.error('Error fetching stations:', error);
       });
   }, []);
-  
 
   const handleDelete = (stationId) => {
     axios.delete(`http://127.0.0.1:8000/stations/${stationId}/delete/`)
@@ -53,10 +52,10 @@ const StationList = () => {
         {stations.map(station => (
           <li key={station.id}>
             <strong>ID:</strong> {station.id}, <strong>Name:</strong> {station.name}, <strong>Address:</strong> {station.address}
-           
-            <button onClick={() => navigate(`/stations/${station.id}/`)}>view</button>
-            <button onClick={() => handleDelete(station.id)}>Delete</button>
+
+            <button onClick={() => navigate(`/stations/${station.id}/`)}>View</button>
             <button onClick={() => navigate(`/stations/${station.id}/update`)}>Edit</button>
+            <button onClick={() => handleDelete(station.id)}>Delete</button>
           </li>
         ))}
       </ul>
