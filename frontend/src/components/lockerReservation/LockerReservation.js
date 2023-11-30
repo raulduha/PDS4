@@ -2,24 +2,26 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; // Asegúrate de importar Link desde react-router-dom
 import './LockerReservation.css'; // Importar el archivo CSS
 
 const LockerReservation = () => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    axios.get(`https://pds-4.vercel.app/reservations/`)
+    axios.get(`https://backend-p3.vercel.app/reservations/`)
       .then(response => {
+        // Filtrar solo las reservas (por ejemplo, si las reservas de lockers tienen un campo específico)
+        const reservationsOnly = response.data.filter(item => item.hasOwnProperty('name_client'));
+        
         // Ordenar las reservas de más grande a más chico por ID
-        const sortedReservations = response.data.sort((a, b) => b.id - a.id);
+        const sortedReservations = reservationsOnly.sort((a, b) => b.id - a.id);
         setReservations(sortedReservations);
       })
       .catch(error => {
         console.error('Error al obtener la lista de reservas:', error);
       });
   }, []);
-
-
 
   return (
     <div className="reservation-container">
@@ -37,9 +39,7 @@ const LockerReservation = () => {
                 <div className="reservation-info">
                   <strong>Cliente:</strong> {reservation.name_client}
                 </div>
-                <div className="reservation-info">
-                  <strong>Email Cliente:</strong> {reservation.email_client}
-                </div>
+                {/* Otros detalles de la reserva */}
                 <div className="reservation-info">
                   <strong>Confirmada:</strong> {reservation.is_confirmed ? 'Sí' : 'No'}
                 </div>
@@ -52,7 +52,10 @@ const LockerReservation = () => {
                 <div className="reservation-info">
                   <strong>Duración de Reserva:</strong> {reservation.duration_time} minutos
                 </div>
-                {/* Agrega más detalles según sea necesario */}
+                {/* Botón para ir a la bitácora */}
+                <Link to={`/bitacora/${reservation.id}`}>
+                  <button>Bitácora</button>
+                </Link>
               </div>
             </li>
           ))}
