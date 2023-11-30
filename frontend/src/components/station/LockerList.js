@@ -8,7 +8,7 @@ const LockerList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/lockers/')
+    axios.get('https://backend-p3.vercel.app/lockers/')
       .then(response => {
         setLockers(response.data);
       })
