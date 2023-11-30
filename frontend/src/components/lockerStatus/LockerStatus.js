@@ -1,72 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AWS from 'aws-sdk';
 import './LockerStatus.css';
+import {
+    IoTDataPlaneClient,
+    GetThingShadowCommand,
+
+  } from "@aws-sdk/client-iot-data-plane"
+
+import { STSClient, AssumeRoleCommand } from "@aws-sdk/client-sts"
 
 const AWSSection = ({ setAWSLockers }) => {
-    const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
-    const awsRegion = "us-east-2";
+    // const awsEndpoint = 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com';
     const accessKeyId = "AKIAU6BRFNUSIDVECJFA";
     const secretAccessKey = "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";
 
-    const roleArn = "arn:aws:iam::339405532452:role/pds_12";
-    const roleSessionName = "session";
 
-    const sts = new AWS.STS({
-        region: awsRegion,
-        credentials: new AWS.Credentials({
-            accessKeyId: accessKeyId,
-            secretAccessKey: secretAccessKey
-        })
-    });
+    const roleArn = "arn:aws:iam::638141874484:role/pds-p3-role-share";
+    const awsRegion = "sa-east-1";
+    const externalId = "EB8SGcKqUd3AiNWBopGFwIVF0xkqQW";
+
 
     useEffect(() => {
-        const assumeRoleParams = {
-            RoleArn: roleArn,
-            RoleSessionName: roleSessionName
-        };
+        const fetchAWSShadow = async () => {
+            try {
+                const sts = new STSClient({
+                    region: "us-east-2",
+                    credentials: { accessKeyId, secretAccessKey }
+                });
 
-        sts.assumeRole(assumeRoleParams, (err, data) => {
-            if (err) {
-                console.error('Error assuming role:', err);
-            } else {
+                const assumeRoleCommand = new AssumeRoleCommand({
+                    RoleArn: roleArn,
+                    ExternalId: externalId,
+                    RoleSessionName: "session"
+                });
+
+                const assumedRole = await sts.send(assumeRoleCommand);
+
+                if (!assumedRole) {
+                    throw new Error('Error assuming role');
+                }
+
                 const assumedCredentials = {
-                    accessKeyId: data.Credentials.AccessKeyId,
-                    secretAccessKey: data.Credentials.SecretAccessKey,
-                    sessionToken: data.Credentials.SessionToken
+                    accessKeyId: assumedRole.Credentials.AccessKeyId,
+                    secretAccessKey: assumedRole.Credentials.SecretAccessKey,
+                    sessionToken: assumedRole.Credentials.SessionToken
                 };
 
-                const iotHandler = new AWS.IotData({
-                    endpoint: awsEndpoint,
+                const iotHandler = new IoTDataPlaneClient({
+                    region: awsRegion,
                     credentials: assumedCredentials
                 });
 
-                const params = {
-                    thingName: 'my_esp_lamp'
-                };
+                const params = { thingName: 'EVT2xB96Dx2gyO2ltRbuB' };
+                const getShadowCommand = new GetThingShadowCommand(params);
+                const shadow = await iotHandler.send(getShadowCommand);
 
-                iotHandler.getThingShadow(params, (err, data) => {
-                    if (err) {
-                        console.error('Error al obtener el estado de los lockers desde AWS IoT:', err);
-                    } else {
-                        const lockerState = JSON.parse(data.payload);
-                        const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => {
-                            const localId = parseInt(lockerId.replace('l', '')); // Convierte el ID de AWS a ID local
-                            return {
-                                id: localId,
-                                lock: lockerState.state.reported.lockers[lockerId].lock,
-                                door: lockerState.state.reported.lockers[lockerId].door,
-                                content: lockerState.state.reported.lockers[lockerId].content
-                            };
-                        });
-
-                        setAWSLockers(lockersState);
-                    }
-                });
+                if (!shadow) {
+                    throw new Error('Error getting shadow from AWS IoT');
+                }
+                const payload = new TextDecoder().decode(shadow.payload)
+                const lockerState = JSON.parse(payload);
+                console.log(lockerState)
+            } catch (error) {
+                console.error('An error occurred:', error.message);
             }
-        });
-    }, [setAWSLockers, awsEndpoint, awsRegion, accessKeyId, secretAccessKey, roleArn, roleSessionName]);
+        };
+        fetchAWSShadow();
 
+    }, [setAWSLockers, awsRegion, accessKeyId, secretAccessKey, roleArn])
     return null; // No se renderiza nada en el DOM
 };
   

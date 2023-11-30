@@ -1,215 +1,220 @@
-import './HomePage.css';
+// import './HomePage.css';
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import AWS from 'aws-sdk';
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
 
-const HomePage = () => {
-  const [userType, setUserType] = useState('client');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [lockerId, setLockerId] = useState('');
-  const [loading, setLoading] = useState(false);
+// import {
+//   IoTDataPlaneClient,
+// } from "@aws-sdk/client-iot-data-plane"
 
-  // AWS configuration
-  useEffect(() => {
-    AWS.config.update({
-      region: 'us-east-2',
-      credentials: new AWS.Credentials({
-        accessKeyId: 'AKIAU6BRFNUSIDVECJFA',
-        secretAccessKey: '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',
-      }),
-    });
-  }, []);
+// import { STSClient } from "@aws-sdk/client-sts"
 
-  // Function to update device shadow based on lock value
-  const updateDeviceShadow = (awsLockerId, lockValue) => {
-    const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
+// const HomePage = () => {
+//   const [userType, setUserType] = useState('client');
+//   const [password, setPassword] = useState('');
+//   const [message, setMessage] = useState('');
+//   const [lockerId, setLockerId] = useState('');
+//   const [loading, setLoading] = useState(false);
 
-    const payload = {
-      state: {
-        desired: {
-          lockers: {
-            [awsLockerId]: {
-              lock: lockValue,
-            },
-          },
-        },
-      },
-    };
+//   // AWS configuration
+// //   useEffect(() => {
+// //     AWS.config.update({
+// //       region: 'us-east-2',
+// //       credentials:({
+// //         accessKeyId: 'AKIAU6BRFNUSIDVECJFA',
+// //         secretAccessKey: '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',
+// //       }),
+// //     });
+// //   }, []);
 
-    const params = {
-      payload: JSON.stringify(payload),
-      thingName: 'my_esp_lamp',
-    };
+// //   // Function to update device shadow based on lock value
+// //   const updateDeviceShadow = (awsLockerId, lockValue) => {
+// //     const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
 
-    iotHandler.updateThingShadow(params, (err, data) => {
-      if (err) {
-        console.error('Error updating device shadow:', err);
-      } else {
-        const newShadow = JSON.parse(data.payload);
-        console.log('Device shadow updated:', newShadow);
-      }
-    });
-  };
+// //     const payload = {
+// //       state: {
+// //         desired: {
+// //           lockers: {
+// //             [awsLockerId]: {
+// //               lock: lockValue,
+// //             },
+// //           },
+// //         },
+// //       },
+// //     };
 
-// Function to handle user access
-const handleAccess = () => {
-  if (password === '') {
-    setMessage('Por favor, ingresa una contraseña.');
-    return;
-  }
+// //     const params = {
+// //       payload: JSON.stringify(payload),
+// //       thingName: 'my_esp_lamp',
+// //     };
 
-  if (!lockerId) {
-    setMessage('Debes proporcionar un ID de casillero.');
-    return;
-  }
+// //     iotHandler.updateThingShadow(params, (err, data) => {
+// //       if (err) {
+// //         console.error('Error updating device shadow:', err);
+// //       } else {
+// //         const newShadow = JSON.parse(data.payload);
+// //         console.log('Device shadow updated:', newShadow);
+// //       }
+// //     });
+// //   };
 
-  const lockerNumber = parseInt(lockerId);
+// // // Function to handle user access
+// // const handleAccess = () => {
+// //   if (password === '') {
+// //     setMessage('Por favor, ingresa una contraseña.');
+// //     return;
+// //   }
 
-  if (lockerNumber < 1 || lockerNumber > 3) {
-    setMessage('El ID del casillero debe estar entre 1 y 3.');
-    return;
-  }
+// //   if (!lockerId) {
+// //     setMessage('Debes proporcionar un ID de casillero.');
+// //     return;
+// //   }
 
-  setLoading(true);
+// //   const lockerNumber = parseInt(lockerId);
 
-  const awsLockerId = `l${lockerNumber}`;
-  const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
+// //   if (lockerNumber < 1 || lockerNumber > 3) {
+// //     setMessage('El ID del casillero debe estar entre 1 y 3.');
+// //     return;
+// //   }
 
-  const params = {
-    thingName: 'my_esp_lamp',
-  };
+// //   setLoading(true);
 
-  iotHandler.getThingShadow(params, (err, data) => {
-    setLoading(false);
+// //   const awsLockerId = `l${lockerNumber}`;
+// //   const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
 
-    if (err) {
-      console.error('Error al obtener el estado del locker desde AWS IoT:', err);
-      setMessage('Ocurrió un error al conectar con AWS IoT.');
-    } else {
-      const lockerState = JSON.parse(data.payload);
+// //   const params = {
+// //     thingName: 'my_esp_lamp',
+// //   };
 
-      // Verificar si el ID del casillero es válido
-      const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => ({
-        id: lockerId,
-        lock: lockerState.state.reported.lockers[lockerId].lock,
-        door: lockerState.state.reported.lockers[lockerId].door,
-        content: lockerState.state.reported.lockers[lockerId].content
-      }));
+// //   iotHandler.getThingShadow(params, (err, data) => {
+// //     setLoading(false);
 
-      if (!lockersState.some(locker => locker.id === awsLockerId)) {
-        setMessage('El ID del casillero no es válido.');
-        return;
-      }
+// //     if (err) {
+// //       console.error('Error al obtener el estado del locker desde AWS IoT:', err);
+// //       setMessage('Ocurrió un error al conectar con AWS IoT.');
+// //     } else {
+// //       const lockerState = JSON.parse(data.payload);
 
-      // Realizar la solicitud al backend de Django
-      const djangoLockerId = `${lockerNumber}`;
-      const endpoint = `http://127.0.0.1:8000/locker/${userType === 'client' ? 'abrir' : 'cerrar'}/${djangoLockerId}/${password}/`;
+// //       // Verificar si el ID del casillero es válido
+// //       const lockersState = Object.keys(lockerState.state.reported.lockers).map(lockerId => ({
+// //         id: lockerId,
+// //         lock: lockerState.state.reported.lockers[lockerId].lock,
+// //         door: lockerState.state.reported.lockers[lockerId].door,
+// //         content: lockerState.state.reported.lockers[lockerId].content
+// //       }));
 
-      axios.post(endpoint)
-        .then((response) => {
-          setMessage('Operación en progreso. Por favor, espere...'); // Mensaje de carga constante
-          // Update device shadow after a successful request
-          updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
+// //       if (!lockersState.some(locker => locker.id === awsLockerId)) {
+// //         setMessage('El ID del casillero no es válido.');
+// //         return;
+// //       }
 
-          // Wait for 6 seconds and check the lock status
-          setTimeout(() => {
-            checkLockStatus(awsLockerId);
-          }, 6000);
-        })
-        .catch((error) => {
-          setMessage('Ocurrió un error al conectar con el servidor. Asegurate de haber colocado las credenciales correctamente.');
-        })
-        .finally(() => {
-          setLoading(false); // Asegurarse de que el estado de carga se establezca en "false" incluso si hay un error
-        });
-    }
-  });
-};
+// //       // Realizar la solicitud al backend de Django
+// //       const djangoLockerId = `${lockerNumber}`;
+// //       const endpoint = `http://127.0.0.1:8000/locker/${userType === 'client' ? 'abrir' : 'cerrar'}/${djangoLockerId}/${password}/`;
 
-  // Function to check the lock status every 6 seconds
-// ... (resto del código)
+// //       axios.post(endpoint)
+// //         .then((response) => {
+// //           setMessage('Operación en progreso. Por favor, espere...'); // Mensaje de carga constante
+// //           // Update device shadow after a successful request
+// //           updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
 
-// Function to check the lock status every 6 seconds
-const checkLockStatus = (awsLockerId, retryCount = 0) => {
-  const maxRetries = 10; // Número máximo de intentos
+// //           // Wait for 6 seconds and check the lock status
+// //           setTimeout(() => {
+// //             checkLockStatus(awsLockerId);
+// //           }, 6000);
+// //         })
+// //         .catch((error) => {
+// //           setMessage('Ocurrió un error al conectar con el servidor. Asegurate de haber colocado las credenciales correctamente.');
+// //         })
+// //         .finally(() => {
+// //           setLoading(false); // Asegurarse de que el estado de carga se establezca en "false" incluso si hay un error
+// //         });
+// //     }
+// //   });
+// // };
 
-  const interval = setInterval(() => {
-    const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
-    const params = {
-      thingName: 'my_esp_lamp',
-    };
+//   // Function to check the lock status every 6 seconds
+// // ... (resto del código)
 
-    iotHandler.getThingShadow(params, (err, data) => {
-      if (err) {
-        console.error('Error al obtener el estado del locker desde AWS IoT:', err);
-      } else {
-        const lockerState = JSON.parse(data.payload);
-        const currentLockStatus = lockerState.state.reported.lockers[awsLockerId].lock;
+// // Function to check the lock status every 6 seconds
+// // const checkLockStatus = (awsLockerId, retryCount = 0) => {
+// //   const maxRetries = 10; // Número máximo de intentos
 
-        if (userType === 'client' && currentLockStatus === 'UNLOCKED') {
-          setMessage('Abierto exitosamente.');
-          clearInterval(interval);
-        } else if (userType === 'delivery' && currentLockStatus === 'LOCKED') {
-          setMessage('Cerrado correctamente. Coloca un objeto y verifica la cerradura.');
-          clearInterval(interval);
-        } else {
-          setMessage('Operación en progreso. Por favor, espere...');
+// //   const interval = setInterval(() => {
+// //     const iotHandler = new AWS.IotData({ endpoint: 'a56zjhbrqce7l-ats.iot.us-east-2.amazonaws.com' });
+// //     const params = {
+// //       thingName: 'my_esp_lamp',
+// //     };
+
+// //     iotHandler.getThingShadow(params, (err, data) => {
+// //       if (err) {
+// //         console.error('Error al obtener el estado del locker desde AWS IoT:', err);
+// //       } else {
+// //         const lockerState = JSON.parse(data.payload);
+// //         const currentLockStatus = lockerState.state.reported.lockers[awsLockerId].lock;
+
+// //         if (userType === 'client' && currentLockStatus === 'UNLOCKED') {
+// //           setMessage('Abierto exitosamente.');
+// //           clearInterval(interval);
+// //         } else if (userType === 'delivery' && currentLockStatus === 'LOCKED') {
+// //           setMessage('Cerrado correctamente. Coloca un objeto y verifica la cerradura.');
+// //           clearInterval(interval);
+// //         } else {
+// //           setMessage('Operación en progreso. Por favor, espere...');
           
-          // Si ha superado el número máximo de intentos, mostrar un mensaje y salir del intervalo
-          if (retryCount >= maxRetries) {
-            setMessage('El locker no se cerró o abrió exitosamente después de varios intentos.');
-            clearInterval(interval);
-          }
-        }
+// //           // Si ha superado el número máximo de intentos, mostrar un mensaje y salir del intervalo
+// //           if (retryCount >= maxRetries) {
+// //             setMessage('El locker no se cerró o abrió exitosamente después de varios intentos.');
+// //             clearInterval(interval);
+// //           }
+// //         }
         
-        // Actualizar el dispositivo sombra después de cada verificación
-        updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
-      }
-    });
-  }, 6000);
-};
+// //         // Actualizar el dispositivo sombra después de cada verificación
+// //         updateDeviceShadow(awsLockerId, userType === 'client' ? 'UNLOCKED' : 'LOCKED');
+// //       }
+// //     });
+// //   }, 6000);
+// // };
 
 
 
 
-  return (
-    <div className="homepage">
-      <h2>Bienvenido al Sistema de Casilleros</h2>
-      <p>Reserva, carga y retira paquetes de manera sencilla y eficiente.</p>
+//   return (
+//     <div className="homepage">
+//       <h2>Bienvenido al Sistema de Casilleros</h2>
+//       <p>Reserva, carga y retira paquetes de manera sencilla y eficiente.</p>
 
-      <div className="lockerAccess">
-        <h3>{userType === 'client' ? 'Acceso Cliente' : 'Acceso Repartidor'}</h3>
-        <div className="inputGroup">
-          <label>
-            Tipo de Usuario:
-            <select onChange={(e) => setUserType(e.target.value)}>
-              <option value="client">Cliente</option>
-              <option value="delivery">Repartidor</option>
-            </select>
-          </label>
-        </div>
-        <div className="inputGroup">
-          <label>
-            ID del Casillero:
-            <input type="text" value={lockerId} onChange={(e) => setLockerId(e.target.value)} />
-          </label>
-        </div>
-        <div className="inputGroup">
-          <label>
-            Contraseña:
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          </label>
-        </div>
-        <button onClick={handleAccess}>
-          {userType === 'client' ? 'Abrir' : 'Cerrar'} Locker
-        </button>
-        {loading && <p>Cargando...</p>}
-        <p>{message}</p>
-      </div>
-    </div>
-  );
-};
+//       <div className="lockerAccess">
+//         <h3>{userType === 'client' ? 'Acceso Cliente' : 'Acceso Repartidor'}</h3>
+//         <div className="inputGroup">
+//           <label>
+//             Tipo de Usuario:
+//             <select onChange={(e) => setUserType(e.target.value)}>
+//               <option value="client">Cliente</option>
+//               <option value="delivery">Repartidor</option>
+//             </select>
+//           </label>
+//         </div>
+//         <div className="inputGroup">
+//           <label>
+//             ID del Casillero:
+//             <input type="text" value={lockerId} onChange={(e) => setLockerId(e.target.value)} />
+//           </label>
+//         </div>
+//         <div className="inputGroup">
+//           <label>
+//             Contraseña:
+//             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+//           </label>
+//         </div>
+//         <button onClick={handleAccess}>
+//           {userType === 'client' ? 'Abrir' : 'Cerrar'} Locker
+//         </button>
+//         {loading && <p>Cargando...</p>}
+//         <p>{message}</p>
+//       </div>
+//     </div>
+//   );
+// };
 
-export default HomePage;
+// export default HomePage;
